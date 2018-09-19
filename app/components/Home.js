@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import * as firebase from 'firebase';
+import ChecklistSummary from './ChecklistSummary.js';
 
 export default class Home extends Component {
 
     state = {
-        checklistKVs: []
+        checklists: []
     };
 
     constructor(props) {
@@ -17,26 +18,26 @@ export default class Home extends Component {
         firebase.database().ref('checklists/').on('value', (snapshot) =>
             {
                 console.log('checklists snapshot', snapshot.val());
-                let data = snapshot.val();
-//                let checklists = Object.values(data);
-                this.setState({data});
-    //            snapshot.forEach((child) => {
-    //                console.log('pushing child', child);
-    //                this.state.checklists.push({
-    //                    name: child.val().name,
-    //                    description: child.val().description,
-    //                    _key: child.key
-    //                });
-    //            });
+                let checklists = [];
+                let checklistKVs = snapshot.val();
+                Object.keys(checklistKVs).forEach((key) => {
+                    checklists.push({
+                        name: checklistKVs[key].name,
+                        description: checklistKVs[key].description,
+                        key: key
+                    });
+                });
+                this.setState({checklists});
+                console.log('kvs', this.state.checklists);
             });
     }
 
     render() {
         return (
-            <View style={styles.home}>
+            <View style={homeStyles.home}>
                 {
-                    this.state.checklistKVs.length > 0
-                    ? this.state.checklistKVs.map(cs => <ChecklistSummary name = {cs.val().name} description = {cs.val().description} key = {cs.key}/>)
+                    this.state.checklists.length > 0
+                    ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
                     : <Text>No checklists</Text>
                 }
             </View>
@@ -44,7 +45,7 @@ export default class Home extends Component {
     }
 }
 
-const styles = StyleSheet.create({
+const homeStyles = StyleSheet.create({
     home: {
         backgroundColor: '#F5FCFF',
         position: 'absolute',
