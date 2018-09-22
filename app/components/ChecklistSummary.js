@@ -1,21 +1,22 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import firebase from 'firebase';
-import { Card } from 'react-native-elements';
-import styles from '../../App.js';
+import { Card, CardContent } from 'react-native-elements';
 
 export default class ChecklistSummary extends Component {
 
     constructor(props) {
         super(props);
-        console.log('checklist summary constructed');
+        console.log('checklist summary constructed with props ', props);
     }
 
     render() {
         return (
-            <Card title={this.props.name} style={csStyles.card}>
-                <Text style={csStyles.description}>{this.props.description}</Text>
-            </Card>
+            <View>
+                <Card title={this.props.name} style={csStyles.card}>
+                    <Text style={csStyles.description}>{this.props.description}</Text>
+                </Card>
+            </View>
         );
     }
 }
@@ -29,6 +30,9 @@ const csStyles = StyleSheet.create({
         borderRadius: 4,
         borderWidth: 0.5,
         borderColor: '#d6d7da',
+        height: 70,
+        justifyContent: 'center',
+        padding: 5,
     },
     description: {
         fontSize: 30,

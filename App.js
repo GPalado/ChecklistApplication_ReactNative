@@ -24,9 +24,9 @@ export default class App extends Component<Props> {
 
   render() {
     return (
-      <View>
-        <Header title='Home' />
-        <Home />
+      <View style={styles.vertContainer}>
+        <Header title='Home' style={styles.header}/>
+        <Home style={styles.home}/>
       </View>
     );
   }
@@ -38,13 +38,13 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
-    padding: 10,
   },
-  hzntContainer: {
-      flex: 1,
-      justifyContent: 'center',
-      alignItems: 'center',
-      backgroundColor: '#F5FCFF',
-      padding: 10,
+  header: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  home: {
+    flex: 4,
+    justifyContent: 'center',
   }
 });

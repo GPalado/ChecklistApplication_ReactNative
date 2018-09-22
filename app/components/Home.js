@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ScrollView } from 'react-native';
 import * as firebase from 'firebase';
 import ChecklistSummary from './ChecklistSummary.js';
 
@@ -34,13 +34,13 @@ export default class Home extends Component {
 
     render() {
         return (
-            <View style={homeStyles.home}>
+            <ScrollView contentContainerStyle={homeStyles.scroll}>
                 {
                     this.state.checklists.length > 0
                     ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
                     : <Text>No checklists</Text>
                 }
-            </View>
+            </ScrollView>
         );
     }
 }
@@ -49,9 +49,10 @@ const homeStyles = StyleSheet.create({
     home: {
         backgroundColor: '#F5FCFF',
         position: 'absolute',
-        top: 55,
-        left: 0,
-        right: 0,
-        bottom: 0,
-    }
+//        flex: 4
+    },
+    scroll: {
+//        paddingVertical: 20,
+        flex: 1,
+    },
 });

@@ -20,11 +20,7 @@ export default class Header extends Component {
 const headerStyles = StyleSheet.create({
     header: {
         backgroundColor: '#cc0000',
-        height: 65,
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
+        flex: 1,
     },
     headerText: {
         fontSize: 50,
