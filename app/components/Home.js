@@ -12,17 +12,10 @@ export default class Home extends Component {
         displayAdd: false
     };
 
-    triggerModal() {
-        this.setState(prevState => {
-             return {
-               displayAdd: true
-             }
-        });
-    }
-
     constructor(props) {
         super(props);
         console.log('home constructed');
+        this.triggerModal = this.triggerModal.bind(this);
     }
 
     componentDidMount() {
@@ -43,9 +36,16 @@ export default class Home extends Component {
             });
     }
 
+    triggerModal() {
+        this.setState({
+             displayAdd: true
+        });
+    }
+
     render() {
+        console.log('viewing modal', this.state.displayAdd);
         return (
-            <View>
+            <View style={homeStyles.home}>
                 <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd}/>
                 <ScrollView contentContainerStyle={homeStyles.scroll}>
                     {
@@ -69,12 +69,12 @@ const homeStyles = StyleSheet.create({
     scroll: {
         flexDirection: 'column',
         flex: 1,
-        justifyContent: 'center'
+        alignItems: 'stretch',
     },
     home: {
         flexDirection: 'column',
-        flex: 4,
-        justifyContent: 'center',
+        flex: 8,
+        alignItems: 'stretch',
         backgroundColor: '#ffffff',
      },
      addButton: {

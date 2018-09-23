@@ -30,7 +30,7 @@ const csStyles = StyleSheet.create({
         padding: 5,
         flexDirection: 'row',
         flex: 1,
-        justifyContent: 'center',
+        alignItems: 'stretch',
     },
     title: {
         color: '#cc0000',
