@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
@@ -9,7 +9,8 @@ export default class Home extends Component {
 
     state = {
         checklists: [],
-        displayAdd: false
+        displayAdd: false,
+        loading: true
     };
 
     constructor(props) {
@@ -21,6 +22,9 @@ export default class Home extends Component {
     componentDidMount() {
         firebase.database().ref('checklists/').on('value', (snapshot) =>
             {
+                this.setState({
+                    loading: true
+                });
                 console.log('checklists snapshot', snapshot.val());
                 let checklists = [];
                 let checklistKVs = snapshot.val();
@@ -32,6 +36,9 @@ export default class Home extends Component {
                     });
                 });
                 this.setState({checklists});
+                this.setState({
+                    loading: false
+                });
                 console.log('kvs', this.state.checklists);
             });
     }
@@ -43,11 +50,12 @@ export default class Home extends Component {
     }
 
     render() {
-        console.log('viewing modal', this.state.displayAdd);
+        /* TODO fix scroll view and loading */
         return (
             <View style={homeStyles.home}>
+                <ActivityIndicator size='large' color='#cc0000' visible={this.state.loading}/>
                 <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
-                <ScrollView contentContainerStyle={homeStyles.scroll}>
+                <ScrollView contentContainerStyle={homeStyles.scroll} visible={!this.state.loading}>
                     {
                         (this.state.checklists.length > 0)
                         ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
@@ -67,9 +75,8 @@ export default class Home extends Component {
 
 const homeStyles = StyleSheet.create({
     scroll: {
-        flexDirection: 'column',
         flex: 1,
-        alignItems: 'stretch',
+        justifyContent: 'space-between'
     },
     home: {
         flexDirection: 'column',
