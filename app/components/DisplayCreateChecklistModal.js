@@ -13,7 +13,7 @@ const Checklist = t.struct({
 
 const DisplayCreateChecklistModal = (props) => (
   <Modal visible={ props.displayAdd } animationType = "slide"
-         onRequestClose={ () => console.log('closed add') }>>
+         onRequestClose={ () => console.log('closed add')} style={modalStyles.modal}>
     <View>
         <Form type={Checklist} />
         <Button
@@ -28,5 +28,14 @@ saveChecklist = () => {
     const checklist = this._form.getValue();
     console.log('New checklist ', checklist);
 }
+
+const modalStyles = StyleSheet.create({
+  modal: {
+    marginTop: 20,
+    marginLeft: 90,
+    height: 200,
+    width: 200
+  },
+});
 
 export default DisplayCreateChecklistModal;

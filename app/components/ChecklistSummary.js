@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import firebase from 'firebase';
 import { Card, CardContent } from 'react-native-elements';
 
 export default class ChecklistSummary extends Component {
@@ -24,7 +23,6 @@ export default class ChecklistSummary extends Component {
 const csStyles = StyleSheet.create({
     card: {
         backgroundColor: '#cccccc',
-        // todo check border style
         borderRadius: 4,
         borderWidth: 0.5,
         borderColor: '#d6d7da',

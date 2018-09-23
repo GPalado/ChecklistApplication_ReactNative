@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
-import * as firebase from 'firebase';
 import { Icon } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
+import * as firebase from 'firebase';
 
 export default class Home extends Component {
 
@@ -12,13 +12,13 @@ export default class Home extends Component {
         displayAdd: false
     };
 
-  triggerModal() {
-    this.setState(prevState => {
-      return {
-        displayAdd: true
-      }
-    });
-  }
+    triggerModal() {
+        this.setState(prevState => {
+             return {
+               displayAdd: true
+             }
+        });
+    }
 
     constructor(props) {
         super(props);
@@ -49,12 +49,17 @@ export default class Home extends Component {
                 <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd}/>
                 <ScrollView contentContainerStyle={homeStyles.scroll}>
                     {
-                        this.state.checklists.length > 0
+                        (this.state.checklists.length > 0)
                         ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
                         : <Text>No checklists</Text>
                     }
                 </ScrollView>
-                <Button title='Add Button' icon={<Icon name='circle-with-plus'/>} style={homeStyles.addButton} onPress={this.triggerModal}/>
+                <Button
+                    title='Add Button'
+                    icon={<Icon name='circle-with-plus'/>}
+                    style={homeStyles.addButton}
+                    onPress={this.triggerModal}
+                />
             </View>
         );
     }

@@ -1,8 +1,8 @@
 import React, {Component} from 'react';
 import {Platform, StyleSheet, Text, View} from 'react-native';
-import firebase from 'firebase';
 import Home from './app/components/Home.js';
 import Header from './app/components/Header.js';
+import firebase from 'firebase';
 
 type Props = {};
 export default class App extends Component<Props> {
