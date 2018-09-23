@@ -15,7 +15,7 @@ export default class Home extends Component {
     constructor(props) {
         super(props);
         console.log('home constructed');
-        this.triggerModal = this.triggerModal.bind(this);
+        this.toggleModal = this.toggleModal.bind(this);
     }
 
     componentDidMount() {
@@ -36,9 +36,9 @@ export default class Home extends Component {
             });
     }
 
-    triggerModal() {
+    toggleModal() {
         this.setState({
-             displayAdd: true
+             displayAdd: !this.state.displayAdd
         });
     }
 
@@ -46,7 +46,7 @@ export default class Home extends Component {
         console.log('viewing modal', this.state.displayAdd);
         return (
             <View style={homeStyles.home}>
-                <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd}/>
+                <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
                 <ScrollView contentContainerStyle={homeStyles.scroll}>
                     {
                         (this.state.checklists.length > 0)
@@ -58,7 +58,7 @@ export default class Home extends Component {
                     title='Add Button'
                     icon={<Icon name='circle-with-plus'/>}
                     style={homeStyles.addButton}
-                    onPress={this.triggerModal}
+                    onPress={this.toggleModal}
                 />
             </View>
         );
@@ -82,5 +82,10 @@ const homeStyles = StyleSheet.create({
         backgroundColor: '#cc0000',
         right: 10,
         bottom: 10
+     },
+     noChecklist: {
+        flexDirection: 'column',
+        flex: 1,
+        justifyContent: 'center',
      }
 });

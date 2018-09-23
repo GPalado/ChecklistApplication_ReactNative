@@ -23,7 +23,6 @@ const headerStyles = StyleSheet.create({
         flexDirection: 'column',
         flex: 1,
         alignItems: 'stretch',
-        backgroundColor: '#dddddd',
     },
     headerText: {
         fontSize: 50,
