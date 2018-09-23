@@ -50,24 +50,26 @@ export default class Home extends Component {
     }
 
     render() {
-        /* TODO fix scroll view and loading */
+        console.log('loading', this.state.loading);
         return (
             <View style={homeStyles.home}>
-                <ActivityIndicator size='large' color='#cc0000' visible={this.state.loading}/>
+            <ScrollView style={homeStyles.scroll}>
                 <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
-                <ScrollView contentContainerStyle={homeStyles.scroll} visible={!this.state.loading}>
                     {
-                        (this.state.checklists.length > 0)
-                        ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
-                        : <Text>No checklists</Text>
+                        (this.state.loading)
+                        ?
+                        <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
+                        : (this.state.checklists.length > 0)
+                         ?
+                                this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
+                             : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists!</Text>
                     }
-                </ScrollView>
                 <Button
-                    title='Add Button'
-                    icon={<Icon name='circle-with-plus'/>}
+                    title='Create New Checklist'
                     style={homeStyles.addButton}
                     onPress={this.toggleModal}
                 />
+                </ScrollView>
             </View>
         );
     }
@@ -76,7 +78,6 @@ export default class Home extends Component {
 const homeStyles = StyleSheet.create({
     scroll: {
         flex: 1,
-        justifyContent: 'space-between'
     },
     home: {
         flexDirection: 'column',
@@ -85,14 +86,7 @@ const homeStyles = StyleSheet.create({
         backgroundColor: '#ffffff',
      },
      addButton: {
-        position: 'relative',
-        backgroundColor: '#cc0000',
-        right: 10,
-        bottom: 10
-     },
-     noChecklist: {
-        flexDirection: 'column',
-        flex: 1,
-        justifyContent: 'center',
+        backgroundColor: '#cccccc',
+        padding: 10
      }
 });
