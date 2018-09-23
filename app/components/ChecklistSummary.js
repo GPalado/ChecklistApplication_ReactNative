@@ -13,7 +13,7 @@ export default class ChecklistSummary extends Component {
     render() {
         return (
             <View>
-                <Card title={this.props.name} style={csStyles.card}>
+                <Card title={this.props.name} style={csStyles.card} titleStyle={csStyles.title}>
                     <Text style={csStyles.description}>{this.props.description}</Text>
                 </Card>
             </View>
@@ -24,18 +24,22 @@ export default class ChecklistSummary extends Component {
 const csStyles = StyleSheet.create({
     card: {
         backgroundColor: '#cccccc',
-        color: '#cc0000',
-        fontSize: 40,
         // todo check border style
         borderRadius: 4,
         borderWidth: 0.5,
         borderColor: '#d6d7da',
         height: 70,
-        justifyContent: 'center',
         padding: 5,
+        flexDirection: 'row',
+        flex: 1,
+        justifyContent: 'center',
+    },
+    title: {
+        color: '#cc0000',
+        fontSize: 30,
     },
     description: {
-        fontSize: 30,
+        fontSize: 15,
         color: '#000000',
     },
 });

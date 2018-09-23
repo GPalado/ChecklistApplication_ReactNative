@@ -25,8 +25,8 @@ export default class App extends Component<Props> {
   render() {
     return (
       <View style={styles.vertContainer}>
-        <Header title='Home' style={styles.header}/>
-        <Home style={styles.home}/>
+        <Header title='Home' />
+        <Home />
       </View>
     );
   }
@@ -34,17 +34,10 @@ export default class App extends Component<Props> {
 
 const styles = StyleSheet.create({
   vertContainer: {
+    flexDirection: 'column',
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: '#F5FCFF',
   },
-  header: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  home: {
-    flex: 4,
-    justifyContent: 'center',
-  }
 });

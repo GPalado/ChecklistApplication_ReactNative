@@ -20,8 +20,11 @@ export default class Header extends Component {
 const headerStyles = StyleSheet.create({
     header: {
         backgroundColor: '#cc0000',
+        flexDirection: 'column',
         flex: 1,
-    },
+        alignItems: 'stretch',
+        backgroundColor: '#dddddd',
+      },
     headerText: {
         fontSize: 50,
         textAlign: 'center',

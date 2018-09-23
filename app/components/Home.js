@@ -1,13 +1,24 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button } from 'react-native';
 import * as firebase from 'firebase';
+import { Icon } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
+import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
 
 export default class Home extends Component {
 
     state = {
-        checklists: []
+        checklists: [],
+        displayAdd: false
     };
+
+  triggerModal() {
+    this.setState(prevState => {
+      return {
+        displayAdd: true
+      }
+    });
+  }
 
     constructor(props) {
         super(props);
@@ -34,25 +45,37 @@ export default class Home extends Component {
 
     render() {
         return (
-            <ScrollView contentContainerStyle={homeStyles.scroll}>
-                {
-                    this.state.checklists.length > 0
-                    ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
-                    : <Text>No checklists</Text>
-                }
-            </ScrollView>
+            <View>
+                <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd}/>
+                <ScrollView contentContainerStyle={homeStyles.scroll}>
+                    {
+                        this.state.checklists.length > 0
+                        ? this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
+                        : <Text>No checklists</Text>
+                    }
+                </ScrollView>
+                <Button title='Add Button' icon={<Icon name='circle-with-plus'/>} style={homeStyles.addButton} onPress={this.triggerModal}/>
+            </View>
         );
     }
 }
 
 const homeStyles = StyleSheet.create({
-    home: {
-        backgroundColor: '#F5FCFF',
-        position: 'absolute',
-//        flex: 4
-    },
     scroll: {
-//        paddingVertical: 20,
+        flexDirection: 'column',
         flex: 1,
+        justifyContent: 'center'
     },
+    home: {
+        flexDirection: 'column',
+        flex: 4,
+        justifyContent: 'center',
+        backgroundColor: '#ffffff',
+     },
+     addButton: {
+        position: 'relative',
+        backgroundColor: '#cc0000',
+        right: 10,
+        bottom: 10
+     }
 });
