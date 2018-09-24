@@ -53,23 +53,23 @@ export default class Home extends Component {
         console.log('loading', this.state.loading);
         return (
             <View style={homeStyles.home}>
-            <ScrollView style={homeStyles.scroll}>
-                <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
-                    {
-                        (this.state.loading)
-                        ?
-                        <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
-                        : (this.state.checklists.length > 0)
-                         ?
-                                this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
-                             : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists!</Text>
-                    }
+                <ScrollView style={homeStyles.scroll}>
+                    <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
+                        {
+                            (this.state.loading)
+                            ?
+                            <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
+                            : (this.state.checklists.length > 0)
+                             ?
+                                    this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} key = {cs.key}/>)
+                                 : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists!</Text>
+                        }
+                </ScrollView>
                 <Button
                     title='Create New Checklist'
                     style={homeStyles.addButton}
                     onPress={this.toggleModal}
                 />
-                </ScrollView>
             </View>
         );
     }
@@ -85,8 +85,13 @@ const homeStyles = StyleSheet.create({
         alignItems: 'stretch',
         backgroundColor: '#ffffff',
      },
-     addButton: {
+    addButton: {
         backgroundColor: '#cccccc',
-        padding: 10
-     }
+        padding: 10,
+        alignSelf: 'flex-end',
+        position: 'absolute',
+        bottom: 10,
+        right: 10,
+        width: 300,
+    }
 });

@@ -27,6 +27,6 @@ const headerStyles = StyleSheet.create({
     headerText: {
         fontSize: 50,
         textAlign: 'center',
-        color: '#000000',
+        color: '#ffffff',
     }
 });

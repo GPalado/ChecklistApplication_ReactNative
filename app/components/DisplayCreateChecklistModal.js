@@ -42,9 +42,17 @@ export default class DisplayCreateChecklistModal extends Component {
             firebase.database().ref('checklists/').push(newChecklist)
             .then((data)=> {
                 ToastAndroid.show('Checklist Successfully Created', ToastAndroid.SHORT);
+                this.resetState();
                 this.props.toggleModal();
             });
         }
+    }
+
+    resetState() {
+        this.setState({
+            name: '',
+            description: ''
+        });
     }
 
     updateName(name) {
