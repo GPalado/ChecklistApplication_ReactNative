@@ -67,7 +67,7 @@ export default class Home extends Component {
                 </ScrollView>
                 <Button
                     title='Create New Checklist'
-                    style={homeStyles.addButton}
+                    buttonStyle={homeStyles.addButton}
                     onPress={this.toggleModal}
                 />
             </View>

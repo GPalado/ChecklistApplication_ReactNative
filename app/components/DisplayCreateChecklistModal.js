@@ -7,7 +7,8 @@ export default class DisplayCreateChecklistModal extends Component {
 
     state = {
         name: '',
-        description: ''
+        description: '',
+        errorMessage: 'This field is required'
     }
 
     constructor(props) {
@@ -23,13 +24,23 @@ export default class DisplayCreateChecklistModal extends Component {
                     <View style={modalStyles.modal}>
                         <FormLabel>Name</FormLabel>
                         <FormInput onChangeText={(name) => this.updateName(name)}/>
-                        <FormValidationMessage visible={this.state.name === ''}>{'This field is required'}</FormValidationMessage>
+                        <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
                         <FormLabel>Description</FormLabel>
                         <FormInput onChangeText={(description) => this.updateDescription(description)}/>
-                        <Button
-                            title="Save"
-                            onPress={this.saveChecklist}
-                        />
+                        <View style={modalStyles.buttonView}>
+                            <View style={modalStyles.buttonContainer}>
+                                <Button
+                                    title="Save"
+                                    onPress={this.saveChecklist}
+                                />
+                            </View>
+                            <View style={modalStyles.buttonContainer}>
+                                <Button
+                                    title="Back"
+                                    onPress={this.props.toggleModal}
+                                />
+                            </View>
+                        </View>
                     </View>
               </Modal>
         )
@@ -38,7 +49,10 @@ export default class DisplayCreateChecklistModal extends Component {
     saveChecklist() {
         if (this.state.name !== '') {
             console.log('checklist data', this.state);
-            let newChecklist = this.state;
+            let newChecklist = {
+                name: this.state.name,
+                description: this.state.description
+            };
             firebase.database().ref('checklists/').push(newChecklist)
             .then((data)=> {
                 ToastAndroid.show('Checklist Successfully Created', ToastAndroid.SHORT);
@@ -56,7 +70,17 @@ export default class DisplayCreateChecklistModal extends Component {
     }
 
     updateName(name) {
+        console.log('name', name);
         this.setState({name});
+        if(name == '') {
+            this.setState({
+                errorMessage: 'This field is required'
+            });
+        } else {
+            this.setState({
+                errorMessage: ''
+            });
+        }
         console.log('Updated state ', this.state);
     }
 
@@ -70,4 +94,16 @@ const modalStyles = StyleSheet.create({
     modal: {
         padding: 20
     },
+    buttonView: {
+        flex: 1,
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    buttonContainer: {
+        width: '40%',
+        height: 45,
+        borderColor: "transparent",
+        borderWidth: 0,
+        borderRadius: 5
+    }
 });
