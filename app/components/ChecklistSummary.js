@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import { Card, CardContent } from 'react-native-elements';
+import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
+import { Card, CardContent, Badge } from 'react-native-elements';
+import LabelBadge from './LabelBadge.js';
 
 export default class ChecklistSummary extends Component {
 
@@ -12,11 +13,23 @@ export default class ChecklistSummary extends Component {
     render() {
         return (
             <View>
-                <Card title={this.props.name} style={csStyles.card} titleStyle={csStyles.title}>
-                    <Text style={csStyles.description}>{this.props.description}</Text>
-                </Card>
+                <TouchableNativeFeedback onPress={this.viewChecklist}>
+                    <Card title={this.props.name} style={csStyles.card} titleStyle={csStyles.title}>
+                        <Text style={csStyles.description}>{this.props.description}</Text>
+                        {
+                            (this.props.labelKeys.length > 0)
+                             ?
+                                this.props.labelKeys.map(l => <LabelBadge labelKey={l.key} key={l.key}/>)
+                                : null
+                        }
+                    </Card>
+                </TouchableNativeFeedback>
             </View>
         );
+    }
+
+    viewChecklist() {
+        // TODO: Use this.props.key to load checklist in a new view?
     }
 }
 
