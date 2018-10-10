@@ -6,17 +6,18 @@ import * as firebase from 'firebase';
 
 export default class FilterModal extends Component {
 
-    state = {
-        labels: [],
-        isAll: false
-    }
-
     constructor(props) {
         super(props);
         console.log('filter modal constructed');
+        this.state = {
+            labels: [],
+            isAll: false,
+            checked: []
+        }
         this.saveFilters = this.saveFilters.bind(this);
         this.render = this.render.bind(this);
-        this.checkAll = this.checkAll.bind(this);
+        this.updateChecked = this.updateChecked.bind(this);
+        this.toggleAll = this.toggleAll.bind(this);
     }
 
     componentDidMount() {
@@ -25,26 +26,25 @@ export default class FilterModal extends Component {
                  labels = snapshot.val();
                  console.log('labels snapshot', labels);
                  let labelArray = [];
-                 let isAll = true;
+                 let checked = [];
                  Object.keys(labels).forEach((key) => {
-                     if(!labels[key].active) {
-                         isAll = false;
+                     if(labels[key].active) {
+                        checked.push(key);
                      }
                      labelArray.push({
                          key: key,
-                         name: labels[key].name,
-                         active: labels[key].active
+                         name: labels[key].name
                      });
                  });
 
                  this.setState({
-                     labels: labelArray.map(l => <FilterCheckbox name={l.name} checked={l.active} labelKey={l.key} pressed={this.checkAll} key={l.key} />),
-                     isAll: isAll
+                     labels: labelArray,
+                     isAll: labelArray.length === checked.length,
+                     checked: checked
                  });
                  console.log('filter modal state', this.state);
              });
     }
-
 
     render() {
           return (
@@ -52,9 +52,23 @@ export default class FilterModal extends Component {
                     onRequestClose={ () => console.log('closed add')}>
                     <View style={modalStyles.modal}>
                         <Text>Choose the labels to filter by:</Text>
-                        <FilterCheckbox name='Check All' checked={this.state.isAll} labelKey='n/a' pressed={this.toggleAll} key='all' />
+                        <FilterCheckbox
+                            name='Check All'
+                            checked={this.state.isAll}
+                            labelKey='n/a'
+                            pressed={this.toggleAll}
+                            key='all'
+                        />
                         {
-                            this.state.labels
+                            this.state.labels.map(l =>
+                                <FilterCheckbox
+                                    name={l.name}
+                                    checked={this.state.checked.includes(l.key)}
+                                    labelKey={l.key}
+                                    pressed={() => this.updateChecked(l.key)}
+                                    key={l.key}
+                                />
+                            )
                         }
                         <View style={modalStyles.buttonView}>
                             <View style={modalStyles.buttonContainer}>
@@ -77,26 +91,28 @@ export default class FilterModal extends Component {
 
     toggleAll() {
         console.log("Toggle all");
-//        this.setState({isAll: !this.state.isAll})
-//        // TODO is this the right way to change state? Or does a new list need to be created then set...
-//        this.state.labels.forEach((filterCheckbox) => {
-//            filterCheckbox.setChecked(this.state.isAll);
-//        });
+        let newChecked = [];
+        if(!this.state.isAll) { // new isAll = true therefore everything this checked
+            newChecked = this.state.labels;
+        }
+        this.setState({
+            isAll: !this.state.isAll,
+            checked: newChecked
+        });
     }
 
-    checkAll() {
-        // state is undefined?
-        console.log("Checking if all");
-//        let isAll = true;
-//        this.state.labels.forEach((filterCheckbox) => {
-//            console.log('type ', typeof(filterCheckbox));
-//            if(!filterCheckbox.isChecked()) {
-//                isAll = false;
-//            }
-//        });
-//        this.setState({
-//            isAll: isAll
-//        });
+    updateChecked(labelKey) {
+        let checkedLabels = this.state.checked;
+        if(checkedLabels.includes(labelKey)) {
+            checkedLabels = checkedLabels.splice(checkedLabels.indexOf(labelKey, 1));
+        } else {
+            checkedLabels.push(labelKey);
+        }
+        let isAll = this.state.labels.length === this.state.checked.length;
+        this.setState({
+            checked: checkedLabels,
+            isAll: isAll
+        });
     }
 
     saveFilters() {

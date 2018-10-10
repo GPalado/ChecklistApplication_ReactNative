@@ -5,15 +5,9 @@ import * as firebase from 'firebase';
 
 export default class FilterCheckbox extends Component {
 
-    state = {
-        checked: false
-    }
-
     constructor(props) {
         super(props);
         console.log('filter constructed with props ', this.props);
-        this.state = {checked: this.props.checked};
-        this.pressed = this.pressed.bind(this);
     }
 
     render() {
@@ -22,32 +16,11 @@ export default class FilterCheckbox extends Component {
                 <CheckBox
                     center
                     title={this.props.name}
-                    checked={this.state.checked}
-                    onPress={this.pressed}
-                    containerStyle={fcStyles.containerView}
+                    checked={this.props.checked}
+                    onPress={this.props.pressed}
                 />
             </View>
         );
-    }
-
-    pressed() {
-        console.log("Filter pressed");
-        this.props.pressed();
-        this.setState({
-            checked: !this.state.checked
-        });
-    }
-
-    setChecked(newChecked) {
-        this.setState({checked: newChecked});
-    }
-
-    isChecked() {
-        return this.state.checked;
-    }
-
-    getLabelKey() {
-        return this.props.labelKey;
     }
 }
 
