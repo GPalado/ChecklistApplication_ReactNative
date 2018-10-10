@@ -17,11 +17,11 @@ export default class Checklist extends Component {
 
     constructor(props) {
         super(props);
-        console.log('checklist constructed');
+        console.log('checklist constructed with props ', this.props);
     }
 
     componentDidMount() {
-        firebase.database().ref('checklists/' + this.props.key).on('value', (snapshot) =>
+        firebase.database().ref('checklists/' + this.props.clKey).on('value', (snapshot) =>
             {
                 checklist = snapshot.val();
                 console.log('checklist snapshot', checklist);
@@ -65,8 +65,8 @@ export default class Checklist extends Component {
                         ?
                         <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
                         :
-                        this.state.labelKeys.map(lKey => <LabelBadge key={lKey}/>)
-
+                        this.state.labelKeys.map(lKey => <LabelBadge lKey={lKey} key={lKey}/>)
+                        this.state.taskKeys.map(tKey => <Task tKey={tKey} key={tKey}/>)
                     }
                 </ScrollView>
                 <Button
@@ -77,7 +77,6 @@ export default class Checklist extends Component {
             </View>
         );
     }
-//                        this.state.taskKeys.map(tKey => <Task key={tKey}/>)
     createNewTask() {
         // TODO: creating new task
     }

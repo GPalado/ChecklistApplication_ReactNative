@@ -1,29 +1,31 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'react-native';
-import { Badge } from 'react-native-elements';
-import ChecklistSummary from './ChecklistSummary.js';
-import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
+import { View, StyleSheet } from 'react-native';
+import { CheckBox } from 'react-native-elements';
 import * as firebase from 'firebase';
 
 export default class LabelBadge extends Component {
 
     state = {
-        name: ''
+        content: '',
+        deadline: '',
+        checked: false
     };
 
     constructor(props) {
         super(props);
-        console.log('label badge constructed with props ', this.props);
+        console.log('task constructed with props ', this.props);
     }
 
     componentDidMount() {
-        firebase.database().ref('labels/' + this.props.labelKey).on('value', (snapshot) =>
+        firebase.database().ref('tasks/' + this.props.taskKey).on('value', (snapshot) =>
             {
-                label = snapshot.val();
-                console.log('label snapshot', label);
+                task = snapshot.val();
+                console.log('task snapshot', task);
 
                 this.setState({
-                    name: label.name
+                    content: task.content,
+                    deadline: task.deadline,
+                    checked: task.checked
                 });
                 console.log('state', this.state);
             });
@@ -31,18 +33,18 @@ export default class LabelBadge extends Component {
 
     render() {
         return (
-            <View styles={lbStyles.badgeView}>
-                <Badge value={this.state.name} containerStyle={lbStyles.containerView}/>
+            <View styles={tStyles.checkboxView}>
+                <CheckBox title={this.state.content} checked={this.state.checked} containerStyle={tStyles.containerView}/>
             </View>
         );
     }
 }
 
-const lbStyles = StyleSheet.create({
-    badgeView: {
+const tStyles = StyleSheet.create({
+    checkboxView: {
         flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-around'
+        flexDirection: 'column',
+        justifyContent: 'space-between',
     },
     containerView: {
         width: '40%',

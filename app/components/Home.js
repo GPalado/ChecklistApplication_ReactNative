@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'r
 import { Icon } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
+import FilterModal from './FilterModal.js';
 import * as firebase from 'firebase';
 
 export default class Home extends Component {
@@ -10,13 +11,15 @@ export default class Home extends Component {
     state = {
         checklists: [],
         displayAdd: false,
+        displayFilters: false,
         loading: true
     };
 
     constructor(props) {
         super(props);
         console.log('home constructed');
-        this.toggleModal = this.toggleModal.bind(this);
+        this.toggleNewChecklistModal = this.toggleNewChecklistModal.bind(this);
+        this.toggleFilterModal = this.toggleFilterModal.bind(this);
     }
 
     componentDidMount() {
@@ -52,9 +55,17 @@ export default class Home extends Component {
             });
     }
 
-    toggleModal() {
+    toggleNewChecklistModal() {
+        console.log('toggled cl modal');
         this.setState({
              displayAdd: !this.state.displayAdd
+        });
+    }
+
+    toggleFilterModal() {
+        console.log('toggled filter modal');
+        this.setState({
+            displayFilters: !this.state.displayFilters
         });
     }
 
@@ -63,22 +74,32 @@ export default class Home extends Component {
         return (
             <View style={homeStyles.home}>
                 <ScrollView style={homeStyles.scroll}>
-                    <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleModal} />
+                    <DisplayCreateChecklistModal style={{flex: 1}} display = {this.state.displayAdd} toggleModal = {this.toggleNewChecklistModal} />
+                    <FilterModal style={{flex: 1}} display = {this.state.displayFilters} toggleModal = {this.toggleFilterModal} />
                     {
                         (this.state.loading)
                         ?
                         <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
                         : (this.state.checklists.length > 0)
                          ?
-                                this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} labelKeys = {cs.labelKeys} key = {cs.key}/>)
+                                this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} labelKeys = {cs.labelKeys} clKey={cs.key} key = {cs.key}/>)
                              : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists!</Text>
                     }
                 </ScrollView>
-                <Button
-                    title='Create New Checklist'
-                    buttonStyle={homeStyles.addButton}
-                    onPress={this.toggleModal}
-                />
+                <View style={homeStyles.buttonView}>
+                    <View style={homeStyles.buttonContainer}>
+                        <Button
+                            title='Filter Checklists'
+                            onPress={this.toggleFilterModal}
+                        />
+                    </View>
+                    <View style={homeStyles.buttonContainer}>
+                        <Button
+                            title='New Checklist'
+                            onPress={this.toggleNewChecklistModal}
+                        />
+                    </View>
+                </View>
             </View>
         );
     }
@@ -94,13 +115,12 @@ const homeStyles = StyleSheet.create({
         alignItems: 'stretch',
         backgroundColor: '#ffffff',
      },
-    addButton: {
-        backgroundColor: '#cccccc',
-        padding: 10,
-        alignSelf: 'flex-end',
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        width: 300,
+    buttonView: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'flex-end',
+    },
+    buttonContainer: {
+        width: '45%'
     }
 });

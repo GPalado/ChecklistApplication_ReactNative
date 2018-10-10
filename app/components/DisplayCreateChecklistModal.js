@@ -30,14 +30,14 @@ export default class DisplayCreateChecklistModal extends Component {
                         <View style={modalStyles.buttonView}>
                             <View style={modalStyles.buttonContainer}>
                                 <Button
-                                    title="Save"
-                                    onPress={this.saveChecklist}
+                                    title="Back"
+                                    onPress={this.props.toggleModal}
                                 />
                             </View>
                             <View style={modalStyles.buttonContainer}>
                                 <Button
-                                    title="Back"
-                                    onPress={this.props.toggleModal}
+                                    title="Save"
+                                    onPress={this.saveChecklist}
                                 />
                             </View>
                         </View>
