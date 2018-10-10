@@ -11,6 +11,7 @@ export default class FilterCheckbox extends Component {
     }
 
     render() {
+        console.log('checkbox is checked: ', this.props.checked);
         return (
             <View styles={fcStyles.checkboxView}>
                 <CheckBox

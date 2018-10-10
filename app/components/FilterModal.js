@@ -90,10 +90,10 @@ export default class FilterModal extends Component {
     }
 
     toggleAll() {
-        console.log("Toggle all");
+        console.log("Toggle all from ", this.state.isAll);
         let newChecked = [];
         if(!this.state.isAll) { // new isAll = true therefore everything this checked
-            newChecked = this.state.labels;
+            newChecked = Object.keys(this.state.labels).map(key => this.state.labels[key].key);
         }
         this.setState({
             isAll: !this.state.isAll,
@@ -102,16 +102,17 @@ export default class FilterModal extends Component {
     }
 
     updateChecked(labelKey) {
+        console.log("Updating checked with ", labelKey);
         let checkedLabels = this.state.checked;
         if(checkedLabels.includes(labelKey)) {
             checkedLabels = checkedLabels.splice(checkedLabels.indexOf(labelKey, 1));
         } else {
             checkedLabels.push(labelKey);
         }
-        let isAll = this.state.labels.length === this.state.checked.length;
+        let newIsAll = (this.state.labels.length === checkedLabels.length) ? true : false;
         this.setState({
             checked: checkedLabels,
-            isAll: isAll
+            isAll: newIsAll
         });
     }
 
