@@ -47,13 +47,13 @@ export default class FilterModal extends Component {
     }
 
     render() {
-          return (
+         return (
               <Modal visible={ this.props.display } animationType = "slide"
                     onRequestClose={ () => console.log('closed add')}>
                     <View style={modalStyles.modal}>
                         <Text>Choose the labels to filter by:</Text>
                         <FilterCheckbox
-                            name='Check All'
+                            name='Select/Deselect All'
                             checked={this.state.isAll}
                             labelKey='n/a'
                             pressed={this.toggleAll}
@@ -86,17 +86,19 @@ export default class FilterModal extends Component {
                         </View>
                     </View>
               </Modal>
-        )
+         )
     }
 
     toggleAll() {
         console.log("Toggle all from ", this.state.isAll);
         let newChecked = [];
+        let newIsAll = false;
         if(!this.state.isAll) { // new isAll = true therefore everything this checked
             newChecked = Object.keys(this.state.labels).map(key => this.state.labels[key].key);
+            newIsAll = true;
         }
         this.setState({
-            isAll: !this.state.isAll,
+            isAll: newIsAll,
             checked: newChecked
         });
     }
@@ -105,7 +107,7 @@ export default class FilterModal extends Component {
         console.log("Updating checked with ", labelKey);
         let checkedLabels = this.state.checked;
         if(checkedLabels.includes(labelKey)) {
-            checkedLabels = checkedLabels.splice(checkedLabels.indexOf(labelKey, 1));
+            checkedLabels.splice(checkedLabels.indexOf(labelKey, 1));
         } else {
             checkedLabels.push(labelKey);
         }

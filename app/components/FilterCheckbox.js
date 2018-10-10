@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { View, StyleSheet } from 'react-native';
-import { CheckBox } from 'react-native-elements';
+import { View, Text, StyleSheet, CheckBox } from 'react-native';
+//import { CheckBox } from 'react-native-elements';
 import * as firebase from 'firebase';
 
 export default class FilterCheckbox extends Component {
@@ -15,11 +15,10 @@ export default class FilterCheckbox extends Component {
         return (
             <View styles={fcStyles.checkboxView}>
                 <CheckBox
-                    center
-                    title={this.props.name}
-                    checked={this.props.checked}
-                    onPress={this.props.pressed}
+                    value={this.props.checked}
+                    onValueChange={() => this.props.pressed(this.props.labelKey)}
                 />
+                <Text style={{marginTop: 5}}>{this.props.name}</Text>
             </View>
         );
     }
@@ -28,7 +27,7 @@ export default class FilterCheckbox extends Component {
 const fcStyles = StyleSheet.create({
     checkboxView: {
         flex: 1,
-        flexDirection: 'column',
+        flexDirection: 'row',
         justifyContent: 'space-between',
     },
 });
