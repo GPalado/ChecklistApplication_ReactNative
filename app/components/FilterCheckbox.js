@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, CheckBox } from 'react-native';
-//import { CheckBox } from 'react-native-elements';
 import * as firebase from 'firebase';
 
 export default class FilterCheckbox extends Component {
