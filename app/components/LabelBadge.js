@@ -40,7 +40,8 @@ const lbStyles = StyleSheet.create({
     badgeView: {
         flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-around'
+        justifyContent: 'space-around',
+        alignItems: 'stretch'
     },
     containerView: {
         width: '40%',

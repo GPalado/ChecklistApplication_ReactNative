@@ -34,19 +34,22 @@ export default class LabelBadge extends Component {
     render() {
         return (
             <View styles={tStyles.checkboxView}>
-                <CheckBox title={this.state.content} checked={this.state.checked} containerStyle={tStyles.containerView}/>
+                <CheckBox
+                    title={this.state.content}
+                    checked={this.state.checked}
+                    onPress={() => this.handleChecked}
+                />
             </View>
         );
+    }
+
+    handleChecked() {
+
     }
 }
 
 const tStyles = StyleSheet.create({
     checkboxView: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'space-between',
-    },
-    containerView: {
-        width: '40%',
+        flexDirection: 'row',
     }
 });
