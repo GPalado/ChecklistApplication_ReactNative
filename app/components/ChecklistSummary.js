@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, TouchableNativeFeedback } from 'react-native';
 import { Card, CardContent, Badge } from 'react-native-elements';
 import LabelBadge from './LabelBadge.js';
+import { Actions } from 'react-native-router-flux';
 
 export default class ChecklistSummary extends Component {
 
@@ -9,20 +10,22 @@ export default class ChecklistSummary extends Component {
         super(props);
         console.log('checklist summary constructed with props ', props);
     }
-
+//</View><View pointerEvents='none'>
     render() {
         return (
             <View>
-                <TouchableNativeFeedback onPress={this.viewChecklist}>
-                    <Card title={this.props.name} style={csStyles.card} titleStyle={csStyles.title}>
-                        <Text style={csStyles.description}>{this.props.description}</Text>
-                        {
-                            (this.props.labelKeys.length > 0)
-                             ?
-                                this.props.labelKeys.map(l => <LabelBadge labelKey={l.key} key={l.key}/>)
-                                : null
-                        }
-                    </Card>
+                <TouchableNativeFeedback onPress={() => {this.viewChecklist()}}>
+
+                        <Card title={this.props.name} style={csStyles.card} titleStyle={csStyles.title}>
+                            <Text style={csStyles.description}>{this.props.description}</Text>
+                            {
+                                (this.props.labelKeys.length > 0)
+                                 ?
+                                    this.props.labelKeys.map(l => <LabelBadge labelKey={l.key} key={l.key}/>)
+                                    : null
+                            }
+                        </Card>
+
                 </TouchableNativeFeedback>
             </View>
         );
@@ -30,6 +33,8 @@ export default class ChecklistSummary extends Component {
 
     viewChecklist() {
         // TODO: Use this.props.key to load checklist in a new view?
+        console.log("Loading checklist ", this.props.clKey);
+        Actions.push("checklist", {clKey: this.props.clKey});
     }
 }
 

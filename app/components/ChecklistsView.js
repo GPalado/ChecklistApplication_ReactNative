@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'react-native';
 import { Icon } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
-import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
 import FilterModal from './FilterModal.js';
+import DisplayCreateChecklistModal from './DisplayCreateChecklistModal.js';
 import * as firebase from 'firebase';
 
-export default class ChecklistView extends Component {
+export default class ChecklistsView extends Component {
 
     state = {
         checklists: [],

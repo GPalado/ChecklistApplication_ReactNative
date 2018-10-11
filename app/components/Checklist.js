@@ -11,13 +11,14 @@ export default class Checklist extends Component {
         name: '',
         description: '',
         labelKeys: [],
-        taskKeys: []
+        taskKeys: [],
         loading: true
     };
 
     constructor(props) {
         super(props);
         console.log('checklist constructed with props ', this.props);
+        this.render = this.render.bind(this);
     }
 
     componentDidMount() {
@@ -34,7 +35,6 @@ export default class Checklist extends Component {
                         });
                     });
                 }
-
                 if(checklist.taskKeys){
                     Object.keys(checklist.taskKeys).forEach((key) => {
                         taskKeys.push({
@@ -42,7 +42,6 @@ export default class Checklist extends Component {
                         });
                     });
                 }
-
                 this.setState({
                     name: checklist.name,
                     description: checklist.description,
@@ -50,23 +49,23 @@ export default class Checklist extends Component {
                     taskKeys: taskKeys,
                     loading: false
                 });
-                console.log('state', this.state);
             });
     }
 
     render() {
+        var labelBadges = this.state.labelKeys.map(lKey => <LabelBadge labelKey={lKey.key} key={lKey.key}/>);
+        var tasks = this.state.taskKeys.map(tKey => <Task taskKey={tKey.key} key={tKey.key}/>);
+        var labelsAndTasks = labelBadges.concat(tasks);
         return (
             <View style={clStyles.checklist}>
                 <ScrollView style={clStyles.scroll}>
                     <Text style={clStyles.title}>{this.state.name}</Text>
                     <Text style={clStyles.description}>{this.state.description}</Text>
                     {
-                        (this.state.loading)
-                        ?
-                        <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
+                        (this.state.loading) ?
+                            <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
                         :
-                        this.state.labelKeys.map(lKey => <LabelBadge lKey={lKey} key={lKey}/>)
-                        this.state.taskKeys.map(tKey => <Task tKey={tKey} key={tKey}/>)
+                            labelsAndTasks
                     }
                 </ScrollView>
                 <Button
