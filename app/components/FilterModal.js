@@ -29,7 +29,7 @@ export default class FilterModal extends Component {
                  let checked = [];
                  Object.keys(labels).forEach((key) => {
                     if(key !== "isAll") {
-                         if(labels[key].active) {
+                         if(labels[key].checked) {
                             checked.push(key);
                          }
                          labelArray.push({
@@ -41,7 +41,7 @@ export default class FilterModal extends Component {
 
                  this.setState({
                      labels: labelArray,
-                     isAll: labelArray.length === checked.length,
+                     isAll: labels.isAll,
                      checked: checked
                  });
                  console.log('filter modal state', this.state);

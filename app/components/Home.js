@@ -12,7 +12,9 @@ export default class Home extends Component {
         checklists: [],
         displayAdd: false,
         displayFilters: false,
-        loading: true
+        loading: true,
+        activeFilters: [],
+        isAll: false
     };
 
     constructor(props) {
@@ -23,6 +25,38 @@ export default class Home extends Component {
     }
 
     componentDidMount() {
+        this.loadFilters();
+    }
+
+    loadFilters() {
+            firebase.database().ref('labels/').on('value', (snapshot) =>
+                {
+                    this.setState({
+                        loading: true
+                    });
+                    console.log('labels snapshot', snapshot.val());
+                    let newActiveFilters = [];
+                    let labels = snapshot.val();
+                    let newIsAll = labels.isAll;
+                    Object.keys(labels).forEach((key) => {
+                        if(key !== "isAll") {
+                            if(labels[key].checked){
+                                newActiveFilters.push(key);
+                            }
+                        }
+                    });
+                    this.setState({
+                        loading: false,
+                        activeFilters: newActiveFilters,
+                        isAll: newIsAll
+                    });
+                    console.log('Active filters', newActiveFilters);
+                    console.log('IsAll', newIsAll);
+                    this.loadChecklists(newActiveFilters, newIsAll);
+                });
+        }
+
+    loadChecklists(activeFilters, isAll) {
         firebase.database().ref('checklists/').on('value', (snapshot) =>
             {
                 this.setState({
@@ -32,26 +66,32 @@ export default class Home extends Component {
                 let checklists = [];
                 let checklistKVs = snapshot.val();
                 Object.keys(checklistKVs).forEach((key) => {
-                    clLabelKeys = [];
+                    let clLabelKeys = [];
+                    let shouldShow = false;
                     if(checklistKVs[key].labelKeys){
                         Object.keys(checklistKVs[key].labelKeys).forEach((lKey) => {
+                            if(activeFilters.includes(checklistKVs[key].labelKeys[lKey])) {
+                                shouldShow = true;
+                            }
                             clLabelKeys.push({
                                 key: checklistKVs[key].labelKeys[lKey]
                             });
                         });
                     }
-                    checklists.push({
-                        name: checklistKVs[key].name,
-                        description: checklistKVs[key].description,
-                        labelKeys: clLabelKeys,
-                        key: key
-                    });
+                    if(shouldShow || isAll) { // Only show the checklists that match the filter.
+                        checklists.push({
+                            name: checklistKVs[key].name,
+                            description: checklistKVs[key].description,
+                            labelKeys: clLabelKeys,
+                            key: key
+                        });
+                    }
                 });
                 this.setState({checklists});
                 this.setState({
                     loading: false
                 });
-                console.log('kvs', this.state.checklists);
+                console.log('updated checklists', checklists);
             });
     }
 
@@ -83,7 +123,7 @@ export default class Home extends Component {
                         : (this.state.checklists.length > 0)
                          ?
                                 this.state.checklists.map(cs => <ChecklistSummary name = {cs.name} description = {cs.description} labelKeys = {cs.labelKeys} clKey={cs.key} key = {cs.key}/>)
-                             : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists!</Text>
+                             : <Text style={{flex: 1, justifyContent: 'center', textAlign: 'center'}}>You have no checklists (check your filters)!</Text>
                     }
                 </ScrollView>
                 <View style={homeStyles.buttonView}>
