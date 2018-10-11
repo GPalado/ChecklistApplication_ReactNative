@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'react-native';
+import { FormInput, FormLabel } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import LabelBadge from './LabelBadge.js';
 import Task from './Task.js';
@@ -59,8 +60,10 @@ export default class Checklist extends Component {
         return (
             <View style={clStyles.checklist}>
                 <ScrollView style={clStyles.scroll}>
-                    <Text style={clStyles.title}>{this.state.name}</Text>
-                    <Text style={clStyles.description}>{this.state.description}</Text>
+                    <FormLabel>Name</FormLabel>
+                    <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name}/>
+                    <FormLabel>Description</FormLabel>
+                    <FormInput onChangeText={(desc) => this.updateDescription(desc)} value={this.state.description}/>
                     {
                         (this.state.loading) ?
                             <ActivityIndicator size='large' color='#cc0000' animating={this.state.loading}/>
@@ -68,44 +71,58 @@ export default class Checklist extends Component {
                             labelsAndTasks
                     }
                 </ScrollView>
-                <Button
-                    title='Create New Task'
-                    buttonStyle={clStyles.addTaskButton}
-                    onPress={this.createNewTask}
-                />
+                <View style={clStyles.buttonView}>
+                    <View style={clStyles.buttonContainer}>
+                        <Button
+                            title='New Task'
+                            onPress={this.toggleNewTaskModal}
+                        />
+                    </View>
+                    <View style={clStyles.buttonContainer}>
+                        <Button
+                            title='Save Changes'
+                            onPress={this.saveChanges}
+                        />
+                    </View>
+                </View>
             </View>
         );
     }
-    createNewTask() {
+
+    toggleNewTaskModal() {
         // TODO: creating new task
+    }
+
+    updateName(name){
+        this.setState({name: name});
+    }
+
+    updateDescription(desc){
+        this.setState({description: desc});
+    }
+
+    saveChanges() {
+        // TODO: update cl
     }
 }
 
 const clStyles = StyleSheet.create({
     scroll: {
         flex: 1,
+        padding: 10,
     },
     checklist: {
         flexDirection: 'column',
-        flex: 8,
+        flex: 1,
         alignItems: 'stretch',
         backgroundColor: '#ffffff',
      },
-    title: {
-        color: '#cc0000',
-        fontSize: 30,
+    buttonView: {
+        flexDirection: 'row',
+        justifyContent: 'space-evenly',
+        alignItems: 'flex-end',
     },
-    description: {
-        fontSize: 15,
-        color: '#000000',
-    },
-    addTaskButton: {
-        backgroundColor: '#cccccc',
-        padding: 10,
-        alignSelf: 'flex-end',
-        position: 'absolute',
-        bottom: 10,
-        right: 10,
-        width: 300,
+    buttonContainer: {
+        width: '45%'
     }
 });

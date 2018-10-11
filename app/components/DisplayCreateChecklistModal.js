@@ -92,18 +92,18 @@ export default class DisplayCreateChecklistModal extends Component {
 
 const modalStyles = StyleSheet.create({
     modal: {
-        padding: 20
+        padding: 20,
+        flexDirection: 'column',
+        flex: 1,
+        alignItems: 'stretch',
+        backgroundColor: '#ffffff',
     },
     buttonView: {
-        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
+        alignItems: 'flex-end',
     },
     buttonContainer: {
-        width: '40%',
-        height: 45,
-        borderColor: "transparent",
-        borderWidth: 0,
-        borderRadius: 5
+        width: '45%'
     }
 });
