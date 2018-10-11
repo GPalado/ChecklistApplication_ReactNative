@@ -28,13 +28,15 @@ export default class FilterModal extends Component {
                  let labelArray = [];
                  let checked = [];
                  Object.keys(labels).forEach((key) => {
-                     if(labels[key].active) {
-                        checked.push(key);
+                    if(key !== "isAll") {
+                         if(labels[key].active) {
+                            checked.push(key);
+                         }
+                         labelArray.push({
+                             key: key,
+                             name: labels[key].name
+                         });
                      }
-                     labelArray.push({
-                         key: key,
-                         name: labels[key].name
-                     });
                  });
 
                  this.setState({
@@ -53,7 +55,7 @@ export default class FilterModal extends Component {
                     <View style={modalStyles.modal}>
                         <Text>Choose the labels to filter by:</Text>
                         <FilterCheckbox
-                            name='Select/Deselect All'
+                            name='Show All'
                             checked={this.state.isAll}
                             labelKey='n/a'
                             pressed={this.toggleAll}
@@ -93,7 +95,7 @@ export default class FilterModal extends Component {
         console.log("Toggle all from ", this.state.isAll);
         let newChecked = [];
         let newIsAll = false;
-        if(!this.state.isAll) { // new isAll = true therefore everything this checked
+        if(!this.state.isAll) { // new isAll = true therefore everything is checked
             newChecked = Object.keys(this.state.labels).map(key => this.state.labels[key].key);
             newIsAll = true;
         }
@@ -111,20 +113,20 @@ export default class FilterModal extends Component {
         } else {
             checkedLabels.push(labelKey);
         }
-        let newIsAll = (this.state.labels.length === checkedLabels.length) ? true : false;
         this.setState({
-            checked: checkedLabels,
-            isAll: newIsAll
+            checked: checkedLabels
         });
     }
 
     saveFilters() {
-        this.state.labels.forEach((filterCheckbox) => {
-            console.log("Setting label " + filterCheckbox.getLabelKey() + " to " + filterCheckbox.isChecked());
-            firebase.database().ref('labels/' + filterCheckbox.getLabelKey()).set({
-                checked: filterCheckbox.isChecked()
+        this.state.labels.forEach((label) => {
+            console.log("Setting label ", label, " to ",this.state.checked.includes(label.key));
+            firebase.database().ref('labels/' + label.key).set({
+                name: label.name,
+                checked: this.state.checked.includes(label.key)
             });
         });
+        firebase.database().ref('labels/isAll').set(this.state.isAll);
         ToastAndroid.show('Filters Successfully Updated', ToastAndroid.SHORT);
         this.props.toggleModal();
     }
