@@ -10,7 +10,7 @@ export default class ChecklistSummary extends Component {
         super(props);
         console.log('checklist summary constructed with props ', props);
     }
-//</View><View pointerEvents='none'>
+
     render() {
         return (
             <View>
@@ -32,7 +32,6 @@ export default class ChecklistSummary extends Component {
     }
 
     viewChecklist() {
-        // TODO: Use this.props.key to load checklist in a new view?
         console.log("Loading checklist ", this.props.clKey);
         Actions.push("checklist", {clKey: this.props.clKey});
     }

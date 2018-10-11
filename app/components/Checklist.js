@@ -1,9 +1,11 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator, ToastAndroid } from 'react-native';
 import { FormInput, FormLabel } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import LabelBadge from './LabelBadge.js';
 import Task from './Task.js';
+import { Actions } from 'react-native-router-flux';
+import NewTaskModal from './NewTaskModal.js';
 import * as firebase from 'firebase';
 
 export default class Checklist extends Component {
@@ -13,13 +15,17 @@ export default class Checklist extends Component {
         description: '',
         labelKeys: [],
         taskKeys: [],
-        loading: true
+        loading: true,
+        displayNewTaskModal: false
     };
 
     constructor(props) {
         super(props);
         console.log('checklist constructed with props ', this.props);
         this.render = this.render.bind(this);
+        this.saveChanges = this.saveChanges.bind(this);
+        this.toggleNewTaskModal = this.toggleNewTaskModal.bind(this);
+        this.updateTaskKeys = this.updateTaskKeys.bind(this);
     }
 
     componentDidMount() {
@@ -59,6 +65,7 @@ export default class Checklist extends Component {
         var labelsAndTasks = labelBadges.concat(tasks);
         return (
             <View style={clStyles.checklist}>
+                <NewTaskModal style={{flex: 1}} display = {this.state.displayNewTaskModal} toggleModal = {this.toggleNewTaskModal} updateTaskKeys = {this.updateTaskKeys} />
                 <ScrollView style={clStyles.scroll}>
                     <FormLabel>Name</FormLabel>
                     <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name}/>
@@ -90,7 +97,10 @@ export default class Checklist extends Component {
     }
 
     toggleNewTaskModal() {
-        // TODO: creating new task
+        console.log('toggled new task modal');
+        this.setState({
+            displayNewTaskModal: !this.state.displayNewTaskModal
+        });
     }
 
     updateName(name){
@@ -101,8 +111,34 @@ export default class Checklist extends Component {
         this.setState({description: desc});
     }
 
+    updateTaskKeys(taskKey) {
+        let newTaskKeys = this.state.taskKeys;
+        if(newTaskKeys.includes(taskKey)) {
+            newTaskKeys.splice(newTaskKeys.indexOf(taskKey), 1);
+        } else {
+            newTaskKeys.push({
+                key: taskKey
+            });
+        }
+        this.setState({
+            taskKeys: newTaskKeys
+        });
+        console.log("new task keys", newTaskKeys);
+    }
+
     saveChanges() {
-        // TODO: update cl
+        firebase.database().ref('checklists/' + this.props.clKey).set({
+            name: this.state.name,
+            description: this.state.description
+        });
+        this.state.labelKeys.forEach((labelKey) => {
+            firebase.database().ref('checklists/' + this.props.clKey + '/labelKeys').push(labelKey['key']);
+        });
+        this.state.taskKeys.forEach((taskKey) => {
+            firebase.database().ref('checklists/' + this.props.clKey + '/taskKeys').push(taskKey['key']);
+        });
+        ToastAndroid.show('Checklist Successfully Updated', ToastAndroid.SHORT);
+        Actions.pop();
     }
 }
 
