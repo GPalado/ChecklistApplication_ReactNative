@@ -51,7 +51,8 @@ export default class NewTaskModal extends Component {
             console.log('task data', this.state);
             let newTask = {
                 content: this.state.content,
-                deadline: this.state.deadline
+                deadline: this.state.deadline,
+                checked: false
             };
             let ref = firebase.database().ref('tasks/').push(newTask);
             ToastAndroid.show('Checklist Successfully Created', ToastAndroid.SHORT);

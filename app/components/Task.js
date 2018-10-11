@@ -37,14 +37,18 @@ export default class LabelBadge extends Component {
                 <CheckBox
                     title={this.state.content}
                     checked={this.state.checked}
-                    onPress={() => this.handleChecked}
+                    onPress={() => this.handleChecked()}
                 />
             </View>
         );
     }
 
     handleChecked() {
-
+        let newChecked = !this.state.checked;
+        firebase.database().ref('tasks/' + this.props.taskKey + '/checked').set(newChecked);
+        this.setState({
+            checked: newChecked
+        });
     }
 }
 
