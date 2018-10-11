@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import { Router, Scene } from 'react-native-router-flux';
 import Home from './app/components/Home.js';
-import Header from './app/components/Header.js';
 import firebase from 'firebase';
 
 type Props = {};
@@ -24,19 +24,18 @@ export default class App extends Component<Props> {
 
   render() {
     return (
-      <View style={styles.vertContainer}>
-        <Header title='Home' />
-        <Home />
-      </View>
+        <View style={appStyles.mainView}>
+            <Home />
+        </View>
     );
   }
 }
 
-const styles = StyleSheet.create({
-  vertContainer: {
-    flexDirection: 'column',
-    flex: 1,
-    alignItems: 'stretch',
-    backgroundColor: '#F5FCFF',
-  },
+const appStyles = StyleSheet.create({
+    mainView: {
+        flexDirection: 'column',
+        flex: 1,
+        alignItems: 'stretch',
+        backgroundColor: '#F5FCFF',
+    },
 });
