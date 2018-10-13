@@ -3,33 +3,31 @@ import { Modal, View, StyleSheet, Button, ToastAndroid, Alert } from 'react-nati
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default class EditTaskModal extends Component {
+export default class EditLabelModal extends Component {
 
     state = {
-        content: '',
-        deadline: '',
+        name: '',
         checked: false,
         errorMessage: ''
     }
 
     constructor(props) {
         super(props);
-        this.saveTask = this.saveTask.bind(this);
+        this.saveLabel = this.saveLabel.bind(this);
         this.render = this.render.bind(this);
         this.confirmDelete = this.confirmDelete.bind(this);
-        console.log("Edit task modal created with props ", props);
+        console.log("Edit filter modal created with props ", props);
     }
 
     componentDidMount() {
-        firebase.database().ref('tasks/' + this.props.taskKey).once('value', (snapshot) =>
+        firebase.database().ref('labels/' + this.props.labelKey).once('value', (snapshot) =>
             {
-                task = snapshot.val();
-                console.log('task snapshot', task);
+                label = snapshot.val();
+                console.log('label snapshot', label);
 
                 this.setState({
-                    content: task.content,
-                    deadline: task.deadline,
-                    checked: task.checked
+                    name: label.name,
+                    checked: label.checked
                 });
                 console.log('state', this.state);
             });
@@ -39,29 +37,27 @@ export default class EditTaskModal extends Component {
           return (
               <Modal visible={ this.props.display } animationType = "slide"
                     onRequestClose={ () => console.log('closed add')}>
-                    <View style={taskModalStyles.modal}>
-                        <FormLabel>Content</FormLabel>
-                        <FormInput onChangeText={(content) => this.updateContent(content)} value={this.state.content} />
+                    <View style={labelModalStyles.modal}>
+                        <FormLabel>Name</FormLabel>
+                        <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name} />
                         <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <FormLabel>Deadline</FormLabel>
-                        <FormInput onChangeText={(deadline) => this.updateDeadline(deadline)} value={this.state.deadline} />
-                        <View style={taskModalStyles.buttonView}>
-                            <View style={taskModalStyles.buttonContainer}>
+                        <View style={labelModalStyles.buttonView}>
+                            <View style={labelModalStyles.buttonContainer}>
                                 <Button
                                     title="Back"
                                     onPress={() => this.props.toggleModal('')}
                                 />
                             </View>
-                            <View style={taskModalStyles.buttonContainer}>
+                            <View style={labelModalStyles.buttonContainer}>
                                 <Button
                                     title="Delete"
                                     onPress={this.confirmDelete}
                                 />
                             </View>
-                            <View style={taskModalStyles.buttonContainer}>
+                            <View style={labelModalStyles.buttonContainer}>
                                 <Button
                                     title="Save"
-                                    onPress={this.saveTask}
+                                    onPress={this.saveLabel}
                                 />
                             </View>
                         </View>
@@ -73,14 +69,14 @@ export default class EditTaskModal extends Component {
     confirmDelete() {
         Alert.alert(
             'CONFIRM',
-            'Are you sure you want to delete this task?',
+            'Are you sure you want to delete this label?',
             [
                 {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
                 {text: 'Yes', onPress: () =>
                     {
-                        console.log("Deleting task");
-                        ToastAndroid.show('Task Successfully Deleted', ToastAndroid.SHORT);
-                        this.props.updateTaskKeys(this.props.taskKey);
+                        console.log("Deleting label");
+                        firebase.database().ref('labels/' + this.props.labelKey).remove();
+                        ToastAndroid.show('Label Successfully Deleted', ToastAndroid.SHORT);
                         this.props.toggleModal('');
                     },
                 }
@@ -88,22 +84,21 @@ export default class EditTaskModal extends Component {
         );
     }
 
-    saveTask() {
-        if (this.state.content !== '') {
-            console.log('task data', this.state);
-            let ref = firebase.database().ref('tasks/' + this.props.taskKey).set({
-                content: this.state.content,
-                deadline: this.state.deadline,
+    saveLabel() {
+        if (this.state.name !== '') {
+            console.log('label data', this.state);
+            let ref = firebase.database().ref('labels/' + this.props.labelKey).set({
+                name: this.state.name,
                 checked: this.state.checked
             });
-            ToastAndroid.show('Task Successfully Updated', ToastAndroid.SHORT);
+            ToastAndroid.show('Label Successfully Updated', ToastAndroid.SHORT);
             this.props.toggleModal('');
         }
     }
 
-    updateContent(content) {
-        this.setState({content});
-        if(content == '') {
+    updateName(name) {
+        this.setState({name});
+        if(name == '') {
             this.setState({
                 errorMessage: 'This field is required'
             });
@@ -113,13 +108,9 @@ export default class EditTaskModal extends Component {
             });
         }
     }
-
-    updateDeadline(deadline) {
-        this.setState({deadline});
-    }
 }
 
-const taskModalStyles = StyleSheet.create({
+const labelModalStyles = StyleSheet.create({
     modal: {
         padding: 20,
         flexDirection: 'column',

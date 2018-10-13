@@ -77,7 +77,7 @@ export default class Checklist extends Component {
             <View>
                 <Task taskKey={tKey} clKey={this.props.clKey} key={tKey}/>
                 <TouchableNativeFeedback style={{flexDirection: 'row', height: 30, padding: 5, backgroundColor: '#eeeeee'}} onPress={() => this.toggleEditModal(tKey)}>
-                    <View style={{height: 20, padding: 5, backgroundColor: '#cccccc'}}>
+                    <View style={{height: 20, padding: 5}}>
                         <Text style={{fontSize: 10, textAlign: 'right'}}>^ Edit Task</Text>
                     </View>
                 </TouchableNativeFeedback>

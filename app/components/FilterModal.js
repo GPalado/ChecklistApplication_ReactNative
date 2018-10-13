@@ -3,6 +3,7 @@ import { Modal, Text, View, StyleSheet, Button, ToastAndroid, TouchableNativeFee
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import FilterCheckbox from './FilterCheckbox.js';
 import NewFilterModal from './NewFilterModal.js';
+import EditLabelModal from './EditLabelModal.js';
 import * as firebase from 'firebase';
 
 export default class FilterModal extends Component {
@@ -14,13 +15,24 @@ export default class FilterModal extends Component {
             labels: [],
             isAll: false,
             checked: [],
-            displayNewFilterModal: false
+            displayNewFilterModal: false,
+            displayEditModalKey: ''
         }
         this.saveFilters = this.saveFilters.bind(this);
         this.render = this.render.bind(this);
         this.updateChecked = this.updateChecked.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
         this.toggleNewFilterModal = this.toggleNewFilterModal.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
+    }
+
+    toggleEditModal(key) {
+        if(this.state.displayEditModalKey !== key) {
+            console.log("toggling edit modal with key ", key);
+            this.setState({
+                displayEditModalKey: key
+            });
+        }
     }
 
     componentDidMount() {
@@ -59,22 +71,32 @@ export default class FilterModal extends Component {
                         <ScrollView style={{flex: 1}}>
                             <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
                             <Text>Choose the labels to filter by:</Text>
-                            <FilterCheckbox
-                                name='Show All'
-                                checked={this.state.isAll}
-                                labelKey='n/a'
-                                pressed={this.toggleAll}
-                                key='all'
-                            />
+                            <View style={{borderWidth: 2, borderColor: '#888888'}}>
+                                <FilterCheckbox
+                                    name='Show All'
+                                    checked={this.state.isAll}
+                                    labelKey='n/a'
+                                    pressed={this.toggleAll}
+                                    key='all'
+                                />
+                            </View>
                             {
                                 this.state.labels.map(l =>
-                                    <FilterCheckbox
-                                        name={l.name}
-                                        checked={this.state.checked.includes(l.key)}
-                                        labelKey={l.key}
-                                        pressed={() => this.updateChecked(l.key)}
-                                        key={l.key}
-                                    />
+                                    <View>
+                                        <FilterCheckbox
+                                            name={l.name}
+                                            checked={this.state.checked.includes(l.key)}
+                                            labelKey={l.key}
+                                            pressed={() => this.updateChecked(l.key)}
+                                            key={l.key}
+                                        />
+                                        <TouchableNativeFeedback style={{flexDirection: 'row', height: 30, padding: 5, backgroundColor: '#eeeeee'}} onPress={() => this.toggleEditModal(l.key)}>
+                                            <View style={{height: 20, padding: 5}}>
+                                                <Text style={{fontSize: 10, textAlign: 'right'}}>^ Edit Label</Text>
+                                            </View>
+                                        </TouchableNativeFeedback>
+                                        <EditLabelModal display={this.state.displayEditModalKey === l.key} labelKey={l.key} toggleModal={this.toggleEditModal} />
+                                    </View>
                                 )
                             }
                             <TouchableNativeFeedback style={{padding: 10}} onPress={() => this.toggleNewFilterModal()}>
