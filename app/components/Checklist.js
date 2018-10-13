@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
-import { View, Text, StyleSheet, ScrollView, Button, ActivityIndicator, ToastAndroid } from 'react-native';
+import { View, StyleSheet, ScrollView, Button, ActivityIndicator, ToastAndroid, TouchableNativeFeedback, Text } from 'react-native';
 import { FormInput, FormLabel } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import LabelBadge from './LabelBadge.js';
 import Task from './Task.js';
 import { Actions } from 'react-native-router-flux';
 import NewTaskModal from './NewTaskModal.js';
+import EditTaskModal from './EditTaskModal.js';
 import * as firebase from 'firebase';
 
 export default class Checklist extends Component {
@@ -15,8 +16,10 @@ export default class Checklist extends Component {
         description: '',
         labelKeys: [],
         taskKeys: [],
+        originalTaskKeys: [],
         loading: true,
-        displayNewTaskModal: false
+        displayNewTaskModal: false,
+        displayEditModalKey: ''
     };
 
     constructor(props) {
@@ -26,6 +29,7 @@ export default class Checklist extends Component {
         this.saveChanges = this.saveChanges.bind(this);
         this.toggleNewTaskModal = this.toggleNewTaskModal.bind(this);
         this.updateTaskKeys = this.updateTaskKeys.bind(this);
+        this.toggleEditModal = this.toggleEditModal.bind(this);
     }
 
     componentDidMount() {
@@ -37,31 +41,49 @@ export default class Checklist extends Component {
                 let taskKeys = [];
                 if(checklist.labelKeys){
                     Object.keys(checklist.labelKeys).forEach((key) => {
-                        labelKeys.push({
-                            key: checklist.labelKeys[key]
-                        });
+                        labelKeys.push(checklist.labelKeys[key]);
                     });
                 }
                 if(checklist.taskKeys){
                     Object.keys(checklist.taskKeys).forEach((key) => {
-                        taskKeys.push({
-                            key: checklist.taskKeys[key]
-                        });
+                        taskKeys.push(checklist.taskKeys[key]);
                     });
                 }
+                console.log("label keys", labelKeys);
+                console.log("task keys", taskKeys);
                 this.setState({
                     name: checklist.name,
                     description: checklist.description,
                     labelKeys: labelKeys,
                     taskKeys: taskKeys,
+                    originalTaskKeys: taskKeys,
                     loading: false
                 });
             });
     }
 
+    toggleEditModal(key) {
+        if(this.state.displayEditModalKey !== key) {
+            console.log("toggling edit modal with key ", key);
+            this.setState({
+                displayEditModalKey: key
+            });
+        }
+    }
+
     render() {
-        var labelBadges = this.state.labelKeys.map(lKey => <LabelBadge labelKey={lKey.key} key={lKey.key}/>);
-        var tasks = this.state.taskKeys.map(tKey => <Task taskKey={tKey.key} key={tKey.key}/>);
+        var labelBadges = this.state.labelKeys.map(lKey => <LabelBadge labelKey={lKey} key={lKey}/>);
+        var tasks = this.state.taskKeys.map(tKey =>
+            <View>
+                <Task taskKey={tKey} clKey={this.props.clKey} key={tKey}/>
+                <TouchableNativeFeedback style={{flexDirection: 'row', height: 30, padding: 5, backgroundColor: '#eeeeee'}} onPress={() => this.toggleEditModal(tKey)}>
+                    <View style={{height: 20, padding: 5, backgroundColor: '#cccccc'}}>
+                        <Text style={{fontSize: 10, textAlign: 'right'}}>^ Edit Task</Text>
+                    </View>
+                </TouchableNativeFeedback>
+                <EditTaskModal display={this.state.displayEditModalKey === tKey} taskKey={tKey} clKey={this.props.clKey} toggleModal={this.toggleEditModal} updateTaskKeys={this.updateTaskKeys} />
+            </View>
+        );
         var labelsAndTasks = labelBadges.concat(tasks);
         return (
             <View style={clStyles.checklist}>
@@ -112,18 +134,16 @@ export default class Checklist extends Component {
     }
 
     updateTaskKeys(taskKey) {
+        console.log("updating task keys with ", taskKey);
         let newTaskKeys = this.state.taskKeys;
         if(newTaskKeys.includes(taskKey)) {
             newTaskKeys.splice(newTaskKeys.indexOf(taskKey), 1);
         } else {
-            newTaskKeys.push({
-                key: taskKey
-            });
+            newTaskKeys.push(taskKey);
         }
         this.setState({
             taskKeys: newTaskKeys
         });
-        console.log("new task keys", newTaskKeys);
     }
 
     saveChanges() {
@@ -132,10 +152,16 @@ export default class Checklist extends Component {
             description: this.state.description
         });
         this.state.labelKeys.forEach((labelKey) => {
-            firebase.database().ref('checklists/' + this.props.clKey + '/labelKeys').push(labelKey['key']);
+            firebase.database().ref('checklists/' + this.props.clKey + '/labelKeys').push(labelKey);
         });
         this.state.taskKeys.forEach((taskKey) => {
-            firebase.database().ref('checklists/' + this.props.clKey + '/taskKeys').push(taskKey['key']);
+            firebase.database().ref('checklists/' + this.props.clKey + '/taskKeys').push(taskKey);
+        });
+        // If tasks have been deleted from the checklist, ensure they are deleted from db tasks
+        this.state.originalTaskKeys.forEach((ogTaskKey) => {
+            if(!this.state.taskKeys.includes(ogTaskKey)) {
+                firebase.database().ref('tasks/' + ogTaskKey).remove();
+            }
         });
         ToastAndroid.show('Checklist Successfully Updated', ToastAndroid.SHORT);
         Actions.pop();
