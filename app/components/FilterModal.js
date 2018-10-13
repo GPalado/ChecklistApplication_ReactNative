@@ -127,7 +127,7 @@ export default class FilterModal extends Component {
         console.log("Updating checked with ", labelKey);
         let checkedLabels = this.state.checked;
         if(checkedLabels.includes(labelKey)) {
-            checkedLabels.splice(checkedLabels.indexOf(labelKey, 1));
+            checkedLabels.splice(checkedLabels.indexOf(labelKey), 1);
         } else {
             checkedLabels.push(labelKey);
         }
