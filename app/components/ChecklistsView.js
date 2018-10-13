@@ -46,12 +46,9 @@ export default class ChecklistsView extends Component {
                     }
                 });
                 this.setState({
-                    loading: false,
                     activeFilters: newActiveFilters,
                     isAll: newIsAll
                 });
-                console.log('Active filters', newActiveFilters);
-                console.log('IsAll', newIsAll);
                 this.loadChecklists(newActiveFilters, newIsAll);
             });
     }
@@ -110,7 +107,6 @@ export default class ChecklistsView extends Component {
     }
 
     render() {
-        console.log('loading', this.state.loading);
         return (
             <View style={cvStyles.home}>
                 <ScrollView style={cvStyles.scroll}>

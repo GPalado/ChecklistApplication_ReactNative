@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Modal, Text, View, StyleSheet, Button, ToastAndroid, TouchableNativeFeedback } from 'react-native';
+import { Modal, Text, View, StyleSheet, Button, ToastAndroid, TouchableNativeFeedback, ScrollView } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import FilterCheckbox from './FilterCheckbox.js';
+import NewFilterModal from './NewFilterModal.js';
 import * as firebase from 'firebase';
 
 export default class FilterModal extends Component {
@@ -12,12 +13,14 @@ export default class FilterModal extends Component {
         this.state = {
             labels: [],
             isAll: false,
-            checked: []
+            checked: [],
+            displayNewFilterModal: false
         }
         this.saveFilters = this.saveFilters.bind(this);
         this.render = this.render.bind(this);
         this.updateChecked = this.updateChecked.bind(this);
         this.toggleAll = this.toggleAll.bind(this);
+        this.toggleNewFilterModal = this.toggleNewFilterModal.bind(this);
     }
 
     componentDidMount() {
@@ -53,25 +56,33 @@ export default class FilterModal extends Component {
               <Modal visible={ this.props.display } animationType = "slide"
                     onRequestClose={ () => console.log('closed add')}>
                     <View style={modalStyles.modal}>
-                        <Text>Choose the labels to filter by:</Text>
-                        <FilterCheckbox
-                            name='Show All'
-                            checked={this.state.isAll}
-                            labelKey='n/a'
-                            pressed={this.toggleAll}
-                            key='all'
-                        />
-                        {
-                            this.state.labels.map(l =>
-                                <FilterCheckbox
-                                    name={l.name}
-                                    checked={this.state.checked.includes(l.key)}
-                                    labelKey={l.key}
-                                    pressed={() => this.updateChecked(l.key)}
-                                    key={l.key}
-                                />
-                            )
-                        }
+                        <ScrollView style={{flex: 1}}>
+                            <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
+                            <Text>Choose the labels to filter by:</Text>
+                            <FilterCheckbox
+                                name='Show All'
+                                checked={this.state.isAll}
+                                labelKey='n/a'
+                                pressed={this.toggleAll}
+                                key='all'
+                            />
+                            {
+                                this.state.labels.map(l =>
+                                    <FilterCheckbox
+                                        name={l.name}
+                                        checked={this.state.checked.includes(l.key)}
+                                        labelKey={l.key}
+                                        pressed={() => this.updateChecked(l.key)}
+                                        key={l.key}
+                                    />
+                                )
+                            }
+                            <TouchableNativeFeedback style={{padding: 10}} onPress={() => this.toggleNewFilterModal()}>
+                                <View style={{height: 35, backgroundColor: '#eeeeee', padding: 5}}>
+                                    <Text style={{fontSize: 20}}>+ Create New Label</Text>
+                                </View>
+                            </TouchableNativeFeedback>
+                        </ScrollView>
                         <View style={modalStyles.buttonView}>
                             <View style={modalStyles.buttonContainer}>
                                 <Button
@@ -89,6 +100,13 @@ export default class FilterModal extends Component {
                     </View>
               </Modal>
          )
+    }
+
+    toggleNewFilterModal() {
+        console.log('toggled new filter modal');
+        this.setState({
+            displayNewFilterModal: !this.state.displayNewFilterModal
+        });
     }
 
     toggleAll() {
@@ -134,18 +152,18 @@ export default class FilterModal extends Component {
 
 const modalStyles = StyleSheet.create({
     modal: {
-        padding: 20
+        padding: 20,
+        flexDirection: 'column',
+        flex: 8,
+        alignItems: 'stretch',
+        backgroundColor: '#ffffff',
     },
     buttonView: {
-        flex: 1,
         flexDirection: 'row',
-        justifyContent: 'space-between',
+        justifyContent: 'space-evenly',
+        alignItems: 'flex-end',
     },
     buttonContainer: {
-        width: '40%',
-        height: 45,
-        borderColor: "transparent",
-        borderWidth: 0,
-        borderRadius: 5
+        width: '45%'
     }
 });

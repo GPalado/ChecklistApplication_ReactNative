@@ -3,17 +3,16 @@ import { Modal, View, StyleSheet, Button, ToastAndroid } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import * as firebase from 'firebase';
 
-export default class NewTaskModal extends Component {
+export default class NewFilterModal extends Component {
 
     state = {
-        content: '',
-        deadline: '',
+        name: '',
         errorMessage: 'This field is required'
     }
 
     constructor(props) {
         super(props);
-        this.saveTask = this.saveTask.bind(this);
+        this.saveFilter = this.saveFilter.bind(this);
         this.render = this.render.bind(this);
     }
 
@@ -21,23 +20,21 @@ export default class NewTaskModal extends Component {
           return (
               <Modal visible={ this.props.display } animationType = "slide"
                     onRequestClose={ () => console.log('closed add')}>
-                    <View style={taskModalStyles.modal}>
-                        <FormLabel>Content</FormLabel>
-                        <FormInput onChangeText={(content) => this.updateContent(content)}/>
+                    <View style={newFilterModalStyles.modal}>
+                        <FormLabel>Name</FormLabel>
+                        <FormInput onChangeText={(name) => this.updateName(name)}/>
                         <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <FormLabel>Deadline</FormLabel>
-                        <FormInput onChangeText={(deadline) => this.updateDeadline(deadline)}/>
-                        <View style={taskModalStyles.buttonView}>
-                            <View style={taskModalStyles.buttonContainer}>
+                        <View style={newFilterModalStyles.buttonView}>
+                            <View style={newFilterModalStyles.buttonContainer}>
                                 <Button
                                     title="Back"
                                     onPress={this.props.toggleModal}
                                 />
                             </View>
-                            <View style={taskModalStyles.buttonContainer}>
+                            <View style={newFilterModalStyles.buttonContainer}>
                                 <Button
                                     title="Save"
-                                    onPress={this.saveTask}
+                                    onPress={this.saveFilter}
                                 />
                             </View>
                         </View>
@@ -46,33 +43,31 @@ export default class NewTaskModal extends Component {
         )
     }
 
-    saveTask() {
-        if (this.state.content !== '') {
-            console.log('task data', this.state);
-            let newTask = {
-                content: this.state.content,
-                deadline: this.state.deadline,
-                checked: false
+    saveFilter() {
+        if (this.state.name !== '') {
+            console.log('filter data', this.state);
+            let newFilter = {
+                name: this.state.name
             };
-            let ref = firebase.database().ref('tasks/').push(newTask);
-            ToastAndroid.show('Checklist Successfully Created', ToastAndroid.SHORT);
+            let ref = firebase.database().ref('labels/').push(newFilter);
+            // when a new filter is created, isAll is no longer true.
+            firebase.database().ref('labels/isAll').set(false);
+            ToastAndroid.show('Filter Successfully Created', ToastAndroid.SHORT);
             this.resetState();
-            this.props.updateTaskKeys(ref['key']);
             this.props.toggleModal();
         }
     }
 
     resetState() {
         this.setState({
-            content: '',
-            deadline: '',
+            name: '',
             errorMessage: 'This field is required'
         });
     }
 
-    updateContent(content) {
-        this.setState({content});
-        if(content == '') {
+    updateName(name) {
+        this.setState({name});
+        if(name == '') {
             this.setState({
                 errorMessage: 'This field is required'
             });
@@ -82,13 +77,9 @@ export default class NewTaskModal extends Component {
             });
         }
     }
-
-    updateDeadline(deadline) {
-        this.setState({deadline});
-    }
 }
 
-const taskModalStyles = StyleSheet.create({
+const newFilterModalStyles = StyleSheet.create({
     modal: {
         padding: 20,
         flexDirection: 'column',
