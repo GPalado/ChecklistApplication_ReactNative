@@ -46,15 +46,16 @@ export default class NewFilterModal extends Component {
     saveFilter() {
         if (this.state.name !== '') {
             console.log('filter data', this.state);
-            let newFilter = {
-                name: this.state.name
-            };
-            let ref = firebase.database().ref('labels/').push(newFilter);
-            // when a new filter is created, isAll is no longer true.
-            firebase.database().ref('labels/isAll').set(false);
-            ToastAndroid.show('Filter Successfully Created', ToastAndroid.SHORT);
-            this.resetState();
-            this.props.toggleModal();
+            firebase.database().ref('labels/isAll').once('value', (snapshot) => {
+                let newFilter = {
+                    name: this.state.name,
+                    checked: snapshot.val()
+                };
+                let ref = firebase.database().ref('labels/').push(newFilter);
+                ToastAndroid.show('Filter Successfully Created', ToastAndroid.SHORT);
+                this.resetState();
+                this.props.toggleModal();
+            });
         }
     }
 
