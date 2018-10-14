@@ -39,26 +39,28 @@ export default class Checklist extends Component {
                 console.log('checklist snapshot', checklist);
                 let labelKeys = [];
                 let taskKeys = [];
-                if(checklist.labelKeys){
-                    Object.keys(checklist.labelKeys).forEach((key) => {
-                        labelKeys.push(checklist.labelKeys[key]);
+                if(checklist){
+                    if(checklist.labelKeys){
+                        Object.keys(checklist.labelKeys).forEach((key) => {
+                            labelKeys.push(checklist.labelKeys[key]);
+                        });
+                    }
+                    if(checklist.taskKeys){
+                        Object.keys(checklist.taskKeys).forEach((key) => {
+                            taskKeys.push(checklist.taskKeys[key]);
+                        });
+                    }
+                    console.log("label keys", labelKeys);
+                    console.log("task keys", taskKeys);
+                    this.setState({
+                        name: checklist.name,
+                        description: checklist.description,
+                        labelKeys: labelKeys,
+                        taskKeys: taskKeys,
+                        originalTaskKeys: taskKeys,
+                        loading: false
                     });
                 }
-                if(checklist.taskKeys){
-                    Object.keys(checklist.taskKeys).forEach((key) => {
-                        taskKeys.push(checklist.taskKeys[key]);
-                    });
-                }
-                console.log("label keys", labelKeys);
-                console.log("task keys", taskKeys);
-                this.setState({
-                    name: checklist.name,
-                    description: checklist.description,
-                    labelKeys: labelKeys,
-                    taskKeys: taskKeys,
-                    originalTaskKeys: taskKeys,
-                    loading: false
-                });
             });
     }
 

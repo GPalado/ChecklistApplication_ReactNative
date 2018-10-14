@@ -37,14 +37,19 @@ export default class ChecklistsView extends Component {
                 console.log('labels snapshot', snapshot.val());
                 let newActiveFilters = [];
                 let labels = snapshot.val();
-                let newIsAll = labels.isAll;
-                Object.keys(labels).forEach((key) => {
-                    if(key !== "isAll") {
-                        if(labels[key].checked){
-                            newActiveFilters.push(key);
+                let newIsAll = true;
+                if(labels){
+                    Object.keys(labels).forEach((key) => {
+                        if(key !== "isAll") {
+                            if(labels[key].checked){
+                                newActiveFilters.push(key);
+                            }
                         }
+                    });
+                    if(labels.isAll){
+                        newIsAll = labels.isAll;
                     }
-                });
+                }
                 this.setState({
                     activeFilters: newActiveFilters,
                     isAll: newIsAll
@@ -62,28 +67,30 @@ export default class ChecklistsView extends Component {
                 console.log('checklists snapshot', snapshot.val());
                 let checklists = [];
                 let checklistKVs = snapshot.val();
-                Object.keys(checklistKVs).forEach((key) => {
-                    let clLabelKeys = [];
-                    let shouldShow = false;
-                    if(checklistKVs[key].labelKeys){
-                        Object.keys(checklistKVs[key].labelKeys).forEach((lKey) => {
-                            if(activeFilters.includes(checklistKVs[key].labelKeys[lKey])) {
-                                shouldShow = true;
-                            }
-                            clLabelKeys.push({
-                                key: checklistKVs[key].labelKeys[lKey]
+                if(checklistKVs){
+                    Object.keys(checklistKVs).forEach((key) => {
+                        let clLabelKeys = [];
+                        let shouldShow = false;
+                        if(checklistKVs[key].labelKeys){
+                            Object.keys(checklistKVs[key].labelKeys).forEach((lKey) => {
+                                if(activeFilters.includes(checklistKVs[key].labelKeys[lKey])) {
+                                    shouldShow = true;
+                                }
+                                clLabelKeys.push({
+                                    key: checklistKVs[key].labelKeys[lKey]
+                                });
                             });
-                        });
-                    }
-                    if(shouldShow || isAll) { // Only show the checklists that match the filter.
-                        checklists.push({
-                            name: checklistKVs[key].name,
-                            description: checklistKVs[key].description,
-                            labelKeys: clLabelKeys,
-                            key: key
-                        });
-                    }
-                });
+                        }
+                        if(shouldShow || isAll) { // Only show the checklists that match the filter.
+                            checklists.push({
+                                name: checklistKVs[key].name,
+                                description: checklistKVs[key].description,
+                                labelKeys: clLabelKeys,
+                                key: key
+                            });
+                        }
+                    });
+                }
                 this.setState({checklists});
                 this.setState({
                     loading: false

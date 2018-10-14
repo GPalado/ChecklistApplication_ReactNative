@@ -16,7 +16,8 @@ export default class FilterModal extends Component {
             isAll: false,
             checked: [],
             displayNewFilterModal: false,
-            displayEditModalKey: ''
+            displayEditModalKey: '',
+            labelsToDelete: []
         }
         this.saveFilters = this.saveFilters.bind(this);
         this.render = this.render.bind(this);
@@ -24,6 +25,7 @@ export default class FilterModal extends Component {
         this.toggleAll = this.toggleAll.bind(this);
         this.toggleNewFilterModal = this.toggleNewFilterModal.bind(this);
         this.toggleEditModal = this.toggleEditModal.bind(this);
+        this.updateLabelsToDelete = this.updateLabelsToDelete.bind(this);
     }
 
     toggleEditModal(key) {
@@ -35,28 +37,53 @@ export default class FilterModal extends Component {
         }
     }
 
+    updateLabelsToDelete(labelKey) {
+        let newLabelsToDelete = this.state.labelsToDelete;
+        let newLabels = this.state.labels;
+        if(!newLabelsToDelete.includes(labelKey)) {
+            newLabelsToDelete.push(labelKey);
+            let labelsKey;
+            Object.keys(newLabels).forEach((key) => {
+                if(newLabels[key]['key'] === labelKey) {
+                    console.log('match found', key);
+                    newLabels.splice(key, 1);
+                    this.setState({
+                        labelsToDelete: newLabelsToDelete,
+                        labels: newLabels
+                    });
+                }
+            });
+        }
+    }
+
     componentDidMount() {
         firebase.database().ref('labels/').on('value', (snapshot) =>
              {
                  labels = snapshot.val();
-                 console.log('labels snapshot', labels);
                  let labelArray = [];
                  let checked = [];
-                 Object.keys(labels).forEach((key) => {
-                    if(key !== "isAll") {
-                         if(labels[key].checked) {
-                            checked.push(key);
+                 let isAll = true;
+                 if(labels){
+                     console.log('labels snapshot', labels);
+                     Object.keys(labels).forEach((key) => {
+                        if(key !== "isAll") {
+                             if(labels[key].checked) {
+                                checked.push(key);
+                             }
+                             labelArray.push({
+                                 key: key,
+                                 name: labels[key].name
+                             });
                          }
-                         labelArray.push({
-                             key: key,
-                             name: labels[key].name
-                         });
+                     });
+                     if(labels.isAll) {
+                         isAll = labels.isAll;
                      }
-                 });
+                 }
 
                  this.setState({
                      labels: labelArray,
-                     isAll: labels.isAll,
+                     isAll: isAll,
                      checked: checked
                  });
                  console.log('filter modal state', this.state);
@@ -95,7 +122,7 @@ export default class FilterModal extends Component {
                                                 <Text style={{fontSize: 10, textAlign: 'right'}}>^ Edit Label</Text>
                                             </View>
                                         </TouchableNativeFeedback>
-                                        <EditLabelModal display={this.state.displayEditModalKey === l.key} labelKey={l.key} toggleModal={this.toggleEditModal} />
+                                        <EditLabelModal display={this.state.displayEditModalKey === l.key} labelKey={l.key} toggleModal={this.toggleEditModal} updateLabelsToDelete={this.updateLabelsToDelete} />
                                     </View>
                                 )
                             }
@@ -114,7 +141,7 @@ export default class FilterModal extends Component {
                             </View>
                             <View style={modalStyles.buttonContainer}>
                                 <Button
-                                    title="Save"
+                                    title="Done"
                                     onPress={this.saveFilters}
                                 />
                             </View>
@@ -161,10 +188,11 @@ export default class FilterModal extends Component {
     saveFilters() {
         this.state.labels.forEach((label) => {
             console.log("Setting label ", label, " to ",this.state.checked.includes(label.key));
-            firebase.database().ref('labels/' + label.key).set({
-                name: label.name,
-                checked: this.state.checked.includes(label.key)
-            });
+            firebase.database().ref('labels/' + label.key + '/checked').set(this.state.checked.includes(label.key));
+        });
+        this.state.labelsToDelete.forEach((label) => {
+            console.log("Deleting label ", label);
+            firebase.database().ref('labels/' + label).remove();
         });
         firebase.database().ref('labels/isAll').set(this.state.isAll);
         ToastAndroid.show('Filters Successfully Updated', ToastAndroid.SHORT);

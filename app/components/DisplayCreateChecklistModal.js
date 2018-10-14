@@ -35,21 +35,23 @@ export default class DisplayCreateChecklistModal extends Component {
         firebase.database().ref('labels/').on('value', (snapshot) =>
                 {
                     labels = snapshot.val();
-                    console.log('labels snapshot', labels);
-                    let labelArray = [];
-                    Object.keys(labels).forEach((key) => {
-                        if(key !== "isAll") {
-                             labelArray.push({
-                                 key: key,
-                                 name: labels[key].name
-                             });
-                        }
-                    });
+                    if(labels) {
+                        console.log('labels snapshot', labels);
+                        let labelArray = [];
+                        Object.keys(labels).forEach((key) => {
+                            if(key !== "isAll") {
+                                 labelArray.push({
+                                     key: key,
+                                     name: labels[key].name
+                                 });
+                            }
+                        });
 
-                    this.setState({
-                        labels: labelArray,
-                    });
-                    console.log('filter modal state', this.state);
+                        this.setState({
+                            labels: labelArray,
+                        });
+                        console.log('filter modal state', this.state);
+                    }
                 });
     }
 
@@ -122,6 +124,7 @@ export default class DisplayCreateChecklistModal extends Component {
             let ref = firebase.database().ref('checklists/').push(newChecklist);
             this.state.checked.forEach((label) => {
                 firebase.database().ref('checklists/' + ref['key'] + '/labelKeys').push(label);
+                firebase.database().ref('labels/' + label + '/checklistKeys').push(ref['key']);
             });
             ToastAndroid.show('Checklist Successfully Created', ToastAndroid.SHORT);
             this.resetState();

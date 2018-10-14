@@ -19,11 +19,11 @@ export default class LabelBadge extends Component {
             {
                 label = snapshot.val();
                 console.log('label snapshot', label);
-
-                this.setState({
-                    name: label.name
-                });
-                console.log('state', this.state);
+                if(label) {
+                    this.setState({
+                        name: label.name
+                    });
+                }
             });
     }
 

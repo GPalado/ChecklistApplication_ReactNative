@@ -75,9 +75,28 @@ export default class EditLabelModal extends Component {
                 {text: 'Yes', onPress: () =>
                     {
                         console.log("Deleting label");
-                        firebase.database().ref('labels/' + this.props.labelKey).remove();
-                        ToastAndroid.show('Label Successfully Deleted', ToastAndroid.SHORT);
-                        this.props.toggleModal('');
+                        firebase.database().ref('labels/' + this.props.labelKey + '/checklistKeys').once('value', (snapshot) => {
+                            console.log("Removing from checklists", snapshot.val());
+                            if(snapshot.val()){
+                                Object.keys(snapshot.val()).forEach((clKey) => {
+                                    let checklistKey = snapshot.val()[clKey];
+                                    let labelRef = '';
+                                    firebase.database().ref('checklists/' + checklistKey + '/labelKeys').once('value', (snapshot) => {
+                                        Object.keys(snapshot.val()).forEach((lKey) => {
+                                            if(snapshot.val()[lKey] === this.props.labelKey) {
+                                                labelRef = lKey;
+                                            }
+                                        });
+                                    }).then((data) => {
+                                        firebase.database().ref('checklists/' + checklistKey + '/labelKeys/' + labelRef).remove();
+                                    });
+                                });
+                            }
+                        }).then((data) => {
+                            ToastAndroid.show('Label Successfully Deleted', ToastAndroid.SHORT);
+                            this.props.toggleModal('');
+                            this.props.updateLabelsToDelete(this.props.labelKey);
+                        });
                     },
                 }
             ]
