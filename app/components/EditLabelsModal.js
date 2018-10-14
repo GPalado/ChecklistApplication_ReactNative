@@ -85,7 +85,7 @@ export default class EditLabelsModal extends Component {
                             <Text>Choose your labels:</Text>
                             {
                                 this.state.labels.map(l =>
-                                    <View>
+                                    <View key={l.key}>
                                         <FilterCheckbox
                                             name={l.name}
                                             checked={this.state.checked.includes(l.key)}

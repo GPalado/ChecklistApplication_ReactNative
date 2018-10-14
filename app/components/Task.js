@@ -21,13 +21,13 @@ export default class LabelBadge extends Component {
             {
                 task = snapshot.val();
                 console.log('task snapshot', task);
-
-                this.setState({
-                    content: task.content,
-                    deadline: task.deadline,
-                    checked: task.checked
-                });
-                console.log('state', this.state);
+                if(task){
+                    this.setState({
+                        content: task.content,
+                        deadline: task.deadline,
+                        checked: task.checked
+                    });
+                }
             });
     }
 

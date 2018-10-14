@@ -109,7 +109,7 @@ export default class FilterModal extends Component {
                             </View>
                             {
                                 this.state.labels.map(l =>
-                                    <View>
+                                    <View key={l.key}>
                                         <FilterCheckbox
                                             name={l.name}
                                             checked={this.state.checked.includes(l.key)}

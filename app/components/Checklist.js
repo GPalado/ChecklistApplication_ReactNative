@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, StyleSheet, ScrollView, Button, ToastAndroid, Text, TouchableNativeFeedback } from 'react-native';
+import { View, StyleSheet, ScrollView, Button, ToastAndroid, Text, TouchableNativeFeedback, Alert } from 'react-native';
 import { FormInput, FormLabel, Badge } from 'react-native-elements';
 import ChecklistSummary from './ChecklistSummary.js';
 import LabelBadge from './LabelBadge.js';
@@ -34,6 +34,7 @@ export default class Checklist extends Component {
         this.updateLabelKeys = this.updateLabelKeys.bind(this);
         this.toggleEditTaskModal = this.toggleEditTaskModal.bind(this);
         this.toggleEditLabelsModal = this.toggleEditLabelsModal.bind(this);
+        this.confirmDelete = this.confirmDelete.bind(this);
     }
 
     componentDidMount() {
@@ -86,7 +87,7 @@ export default class Checklist extends Component {
     render() {
         let labelBadges = this.state.labelKeys.map(lKey => <LabelBadge labelKey={lKey} key={lKey}/>);
         let tasks = this.state.taskKeys.map(tKey =>
-            <View>
+            <View key={tKey}>
                 <Task taskKey={tKey} clKey={this.props.clKey} key={tKey}/>
                 <TouchableNativeFeedback style={{flexDirection: 'row', height: 30, padding: 5, backgroundColor: '#eeeeee'}} onPress={() => this.toggleEditTaskModal(tKey)}>
                     <View style={{height: 20, padding: 5}}>
@@ -96,7 +97,6 @@ export default class Checklist extends Component {
                 <EditTaskModal display={this.state.displayEditTaskModalKey === tKey} taskKey={tKey} clKey={this.props.clKey} toggleModal={this.toggleEditTaskModal} updateTaskKeys={this.updateTaskKeys} />
             </View>
         );
-        console.log('exsting', this.state.labelKeys);
         let editLabelsModal = (<EditLabelsModal style={{flex: 1}} display = {this.state.displayEditLabelsModal} existingLabels = {this.state.labelKeys} toggleModal = {this.toggleEditLabelsModal} updateLabelKeys={this.updateLabelKeys} />);
         return (
             <View style={clStyles.checklist}>
@@ -126,12 +126,63 @@ export default class Checklist extends Component {
                     </View>
                     <View style={clStyles.buttonContainer}>
                         <Button
-                            title='Save Changes'
+                            title="Delete"
+                            onPress={() => this.confirmDelete(this.state.originalTaskKeys, this.state.taskKeys, this.state.originalLabelKeys)}
+                        />
+                    </View>
+                    <View style={clStyles.buttonContainer}>
+                        <Button
+                            title='Save'
                             onPress={this.saveChanges}
                         />
                     </View>
                 </View>
             </View>
+        );
+    }
+
+    confirmDelete(originalTaskKeys, taskKeys, originalLabelKeys) {
+        Alert.alert(
+            'CONFIRM',
+            'Are you sure you want to delete this checklist?',
+            [
+                {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
+                {text: 'Yes', onPress: () =>
+                    {
+                        console.log("Deleting checklist");
+                        // Delete tasks belonging to this checklist - both old and new
+                        originalTaskKeys.forEach((ogTaskKey) => {
+                            firebase.database().ref('tasks/' + ogTaskKey).remove();
+                        });
+                        taskKeys.forEach((taskKey) => {
+                            if(!this.state.originalTaskKeys.includes(taskKey)) {
+                                firebase.database.ref('tasks/' + taskKey).remove();
+                            }
+                        });
+                        // Ensure the label references are deleted
+                        originalLabelKeys.forEach((ogLabelKey) => {
+                            let checklistRef = '';
+                            firebase.database().ref('labels/' + ogLabelKey + '/checklistKeys').once('value', (snapshot) => {
+                                let checklistKeys = snapshot.val();
+                                if(checklistKeys) {
+                                    Object.keys(checklistKeys).forEach((clKey) => {
+                                        if(snapshot.val()[clKey] === this.props.clKey) {
+                                            checklistRef = clKey;
+                                        }
+                                    });
+                                }
+                            }).then((data) => {
+                                firebase.database().ref('labels/' + ogLabelKey + '/checklistKeys/' + checklistRef).remove();
+                            });
+                        });
+
+                        firebase.database().ref('checklists/' + this.props.clKey).remove();
+
+                        ToastAndroid.show('Checklist Successfully Deleted', ToastAndroid.SHORT);
+                        Actions.pop();
+                    },
+                }
+            ]
         );
     }
 
@@ -232,7 +283,7 @@ const clStyles = StyleSheet.create({
         alignItems: 'flex-end',
     },
     buttonContainer: {
-        width: '45%'
+        width: '30%'
     },
     badgeView: {
         height: 40,
