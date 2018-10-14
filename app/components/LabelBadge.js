@@ -29,8 +29,8 @@ export default class LabelBadge extends Component {
 
     render() {
         return (
-            <View styles={lbStyles.badgeView}>
-                <Badge value={this.state.name} containerStyle={lbStyles.containerView}/>
+            <View style={lbStyles.badgeView}>
+                <Badge value={this.state.name}/>
             </View>
         );
     }
@@ -38,12 +38,7 @@ export default class LabelBadge extends Component {
 
 const lbStyles = StyleSheet.create({
     badgeView: {
-        flex: 1,
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'stretch'
-    },
-    containerView: {
-        width: '40%',
+        height: 30,
+        padding: 3
     }
 });
