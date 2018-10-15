@@ -23,7 +23,7 @@ export default class NewFilterModal extends Component {
               <ModalView buttons={buttons} display={this.props.display}>
                     <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(name) => this.updateName(name)}/>
-                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
+                    <FormValidationMessage labelStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
               </ModalView>
         )
     }

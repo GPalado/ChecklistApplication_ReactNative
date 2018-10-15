@@ -75,7 +75,7 @@ export default class DisplayCreateChecklistModal extends Component {
               <ModalView buttons={buttons} display={this.props.display}>
                     <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(name) => this.updateName(name)}/>
-                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
+                    <FormValidationMessage labelStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
                     <FormLabel labelStyle={modalStyles.text}>Description</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(description) => this.updateDescription(description)}/>
                     <FormLabel labelStyle={modalStyles.text}>Choose your labels</FormLabel>

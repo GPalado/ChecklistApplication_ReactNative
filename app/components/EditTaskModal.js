@@ -40,7 +40,7 @@ export default class EditTaskModal extends Component {
               <ModalView buttons={buttons} display={this.props.display}>
                     <FormLabel labelStyle={modalStyles.text}>Content</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(content) => this.updateContent(content)} value={this.state.content} />
-                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
+                    <FormValidationMessage labelStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
               </ModalView>
         );
     }
