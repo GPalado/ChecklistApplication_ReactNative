@@ -35,14 +35,19 @@ export default class EditLabelModal extends Component {
     }
 
     render() {
-        let buttons = [{name: 'Back', callback:this.props.toggleModal('')},{name: 'Delete', callback: this.confirmDelete},{name: 'Save', callback: this.saveLabel}];
+        let buttons = [
+            {name: 'Back', callback: this.props.toggleModal},
+            {name: 'Delete', callback: this.confirmDelete},
+            {name: 'Save', callback: this.saveLabel}
+        ];
+        console.log('buttons', buttons);
         return (
-              <ModalView buttons={buttons} visible={this.props.display}>
-                    <FormLabel>Name</FormLabel>
-                    <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name} />
-                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+              <ModalView buttons={buttons} display={this.props.display}>
+                    <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(name) => this.updateName(name)} value={this.state.name} />
+                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
               </ModalView>
-        )
+        );
     }
 
     confirmDelete() {
@@ -107,3 +112,12 @@ export default class EditLabelModal extends Component {
         }
     }
 }
+
+const modalStyles = StyleSheet.create({
+    text: {
+        color: 'white'
+    },
+    errorTextContainer: {
+        color: '#eeeeee'
+    }
+});

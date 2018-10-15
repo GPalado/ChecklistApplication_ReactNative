@@ -21,12 +21,12 @@ export default class NewTaskModal extends Component {
     render() {
         let buttons = [{name: 'Back', callback: this.props.toggleModal},{name: 'Save', callback: this.saveTask}];
         return (
-              <ModalView buttons={buttons} visible={this.props.display}>
-                    <FormLabel>Content</FormLabel>
-                    <FormInput onChangeText={(content) => this.updateContent(content)}/>
-                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                    <FormLabel>Deadline</FormLabel>
-                    <FormInput onChangeText={(deadline) => this.updateDeadline(deadline)}/>
+              <ModalView buttons={buttons} display={this.props.display}>
+                    <FormLabel labelStyle={modalStyles.text}>Content</FormLabel>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(content) => this.updateContent(content)}/>
+                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
+                    <FormLabel labelStyle={modalStyles.text}>Deadline</FormLabel>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(deadline) => this.updateDeadline(deadline)}/>
               </ModalView>
         )
     }
@@ -72,3 +72,12 @@ export default class NewTaskModal extends Component {
         this.setState({deadline});
     }
 }
+
+const modalStyles = StyleSheet.create({
+    text: {
+        color: 'white'
+    },
+    errorTextContainer: {
+        color: '#eeeeee'
+    }
+});

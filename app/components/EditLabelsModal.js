@@ -79,7 +79,7 @@ export default class EditLabelsModal extends Component {
     render() {
         let buttons = [{name: 'Back', callback:this.props.toggleModal},{name: 'Done', callback: this.saveLabels}];
          return (
-              <ModalView buttons={buttons} visible={this.props.display}>
+              <ModalView buttons={buttons} display={this.props.display}>
                     <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
                     <Text>Choose your labels:</Text>
                     {

@@ -20,10 +20,10 @@ export default class NewFilterModal extends Component {
     render() {
         let buttons = [{name: 'Back', callback:this.props.toggleModal},{name: 'Save', callback: this.saveFilter}];
           return (
-              <ModalView buttons={buttons} visible={this.props.display}>
-                    <FormLabel>Name</FormLabel>
-                    <FormInput onChangeText={(name) => this.updateName(name)}/>
-                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+              <ModalView buttons={buttons} display={this.props.display}>
+                    <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(name) => this.updateName(name)}/>
+                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
               </ModalView>
         )
     }
@@ -71,3 +71,12 @@ export default class NewFilterModal extends Component {
         }
     }
 }
+
+const modalStyles = StyleSheet.create({
+    text: {
+        color: 'white'
+    },
+    errorTextContainer: {
+        color: '#eeeeee'
+    }
+});

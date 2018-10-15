@@ -72,12 +72,12 @@ export default class DisplayCreateChecklistModal extends Component {
     render() {
         let buttons = [{name: 'Back', callback:this.props.toggleModal},{name: 'Save', callback: this.saveChecklist}];
         return (
-              <ModalView buttons={buttons} visible={this.props.display}>
+              <ModalView buttons={buttons} display={this.props.display}>
                     <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
-                    <FormInput onChangeText={(name) => this.updateName(name)}/>
-                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(name) => this.updateName(name)}/>
+                    <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
                     <FormLabel labelStyle={modalStyles.text}>Description</FormLabel>
-                    <FormInput onChangeText={(description) => this.updateDescription(description)}/>
+                    <FormInput inputStyle={modalStyles.text} onChangeText={(description) => this.updateDescription(description)}/>
                     <FormLabel labelStyle={modalStyles.text}>Choose your labels</FormLabel>
                     <ScrollView style={{flex: 1}}>
                     <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
@@ -149,4 +149,7 @@ const modalStyles = StyleSheet.create({
     text: {
         color: 'white'
     },
+    errorTextContainer: {
+        color: '#eeeeee'
+    }
 });

@@ -29,13 +29,17 @@ export default class FilterModal extends Component {
         this.updateLabelsToDelete = this.updateLabelsToDelete.bind(this);
     }
 
-    toggleEditModal(key) {
-        if(this.state.displayEditModalKey !== key) {
-            console.log("toggling edit modal with key ", key);
-            this.setState({
-                displayEditModalKey: key
-            });
-        }
+    setEditKey(key){
+        console.log("setting edit modal with key ", key);
+        this.setState({
+            displayEditModalKey: key
+        });
+    }
+
+    toggleEditModal() {
+        this.setState({
+            displayEditModalKey: ''
+        });
     }
 
     updateLabelsToDelete(labelKey) {
@@ -77,7 +81,7 @@ export default class FilterModal extends Component {
                              });
                          }
                      });
-                     if(labels.isAll) {
+                     if(labels.isAll !== undefined) {
                          isAll = labels.isAll;
                      }
                  }
@@ -92,9 +96,13 @@ export default class FilterModal extends Component {
     }
 
     render() {
-        let buttons = [{name: 'Back', callback: this.props.toggleModal},{name: 'Done', callback: this.saveFilters}];
+        let buttons = [
+            {name: 'Back', callback: this.props.toggleModal},
+            {name: 'Done', callback: this.saveFilters}
+        ];
+        console.log('buttons', buttons);
          return (
-              <ModalView buttons={buttons} visible={this.props.display}>
+              <ModalView buttons={buttons} display={this.props.display}>
                     <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
                     <Text style={modalStyles.text}>Choose the labels to filter by:</Text>
                     <View style={{borderWidth: 2, borderColor: '#888888'}}>
@@ -116,7 +124,7 @@ export default class FilterModal extends Component {
                                     pressed={() => this.updateChecked(l.key)}
                                     key={l.key}
                                 />
-                                <TouchableNativeFeedback style={{flexDirection: 'row', height: 30, padding: 5, backgroundColor: '#eeeeee'}} onPress={() => this.toggleEditModal(l.key)}>
+                                <TouchableNativeFeedback style={modalStyles.editLabelTouchable} onPress={() => this.setEditKey(l.key)}>
                                     <View style={modalStyles.editLabelTextView}>
                                         <Text style={[modalStyles.text, modalStyles.editLabelText]}>^ Edit Label</Text>
                                     </View>
@@ -202,5 +210,11 @@ const modalStyles = StyleSheet.create({
     },
     newLabelText: {
         fontSize: 20
+    },
+    editLabelTouchable: {
+        flexDirection: 'row',
+        height: 30,
+        padding: 5,
+        backgroundColor: '#eeeeee'
     }
 });

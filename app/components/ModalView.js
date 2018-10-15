@@ -14,7 +14,7 @@ export default class ModalView extends Component {
 
     render() {
          return (
-              <Modal transparent={true} visible={ this.props.visible } animationType = "slide"
+              <Modal transparent={true} visible={ this.props.display } animationType = "slide"
                     onRequestClose={ () => console.log('closed add')}>
                     <View style={modalStyles.extView}>
                         <View style={modalStyles.modal}>
@@ -23,15 +23,15 @@ export default class ModalView extends Component {
                             </ScrollView>
                             <View style={modalStyles.buttonView}>
                                 {
-                                    this.props.buttons.map(button => {
-                                        return (
-                                           <View style={modalStyles.buttonContainer}>
+                                    this.props.buttons.map((button) => {
+                                       return (
+                                           <View style={modalStyles.buttonContainer} key={button.name}>
                                                 <Button
                                                     title={button.name}
                                                     onPress={button.callback}
                                                 />
-                                            </View>
-                                        )
+                                           </View>
+                                       )
                                     })
                                 }
                             </View>
@@ -49,7 +49,7 @@ const modalStyles = StyleSheet.create({
         flex: 8,
         alignItems: 'stretch',
         width: '80%',
-        backgroundColor: 'rgba(70, 70, 70, 0.95)'
+        backgroundColor: 'rgba(204, 0, 0, 0.85)'
     },
     extView: {
         flex: 1,
