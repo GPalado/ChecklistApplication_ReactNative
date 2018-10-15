@@ -46,7 +46,7 @@ export default class ChecklistsView extends Component {
                             }
                         }
                     });
-                    if(labels.isAll){
+                    if(labels.isAll !== undefined){
                         newIsAll = labels.isAll;
                     }
                 }
@@ -59,6 +59,7 @@ export default class ChecklistsView extends Component {
     }
 
     loadChecklists(activeFilters, isAll) {
+        console.log("Loading new checklists with filters ", activeFilters, " and isAll value of ", isAll);
         firebase.database().ref('checklists/').on('value', (snapshot) =>
             {
                 this.setState({
