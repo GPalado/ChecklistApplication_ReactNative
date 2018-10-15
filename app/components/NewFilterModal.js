@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, View, StyleSheet, Button, ToastAndroid } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import ModalView from './ModalView.js';
 import * as firebase from 'firebase';
 
 export default class NewFilterModal extends Component {
@@ -17,29 +18,13 @@ export default class NewFilterModal extends Component {
     }
 
     render() {
+        let buttons = [{name: 'Back', callback:this.props.toggleModal},{name: 'Save', callback: this.saveFilter}];
           return (
-              <Modal visible={ this.props.display } animationType = "slide"
-                    onRequestClose={ () => console.log('closed add')}>
-                    <View style={newFilterModalStyles.modal}>
-                        <FormLabel>Name</FormLabel>
-                        <FormInput onChangeText={(name) => this.updateName(name)}/>
-                        <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <View style={newFilterModalStyles.buttonView}>
-                            <View style={newFilterModalStyles.buttonContainer}>
-                                <Button
-                                    title="Back"
-                                    onPress={this.props.toggleModal}
-                                />
-                            </View>
-                            <View style={newFilterModalStyles.buttonContainer}>
-                                <Button
-                                    title="Save"
-                                    onPress={this.saveFilter}
-                                />
-                            </View>
-                        </View>
-                    </View>
-              </Modal>
+              <ModalView buttons={buttons} visible={this.props.display}>
+                    <FormLabel>Name</FormLabel>
+                    <FormInput onChangeText={(name) => this.updateName(name)}/>
+                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+              </ModalView>
         )
     }
 
@@ -86,21 +71,3 @@ export default class NewFilterModal extends Component {
         }
     }
 }
-
-const newFilterModalStyles = StyleSheet.create({
-    modal: {
-        padding: 20,
-        flexDirection: 'column',
-        flex: 1,
-        alignItems: 'stretch',
-        backgroundColor: '#ffffff',
-    },
-    buttonView: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'flex-end',
-    },
-    buttonContainer: {
-        width: '45%'
-    }
-});

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, View, StyleSheet, Button, ToastAndroid, Alert } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import ModalView from './ModalView.js';
 import * as firebase from 'firebase';
 
 export default class EditTaskModal extends Component {
@@ -36,38 +37,16 @@ export default class EditTaskModal extends Component {
     }
 
     render() {
-          return (
-              <Modal visible={ this.props.display } animationType = "slide"
-                    onRequestClose={ () => console.log('closed add')}>
-                    <View style={taskModalStyles.modal}>
-                        <FormLabel>Content</FormLabel>
-                        <FormInput onChangeText={(content) => this.updateContent(content)} value={this.state.content} />
-                        <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <FormLabel>Deadline</FormLabel>
-                        <FormInput onChangeText={(deadline) => this.updateDeadline(deadline)} value={this.state.deadline} />
-                        <View style={taskModalStyles.buttonView}>
-                            <View style={taskModalStyles.buttonContainer}>
-                                <Button
-                                    title="Back"
-                                    onPress={() => this.props.toggleModal('')}
-                                />
-                            </View>
-                            <View style={taskModalStyles.buttonContainer}>
-                                <Button
-                                    title="Delete"
-                                    onPress={this.confirmDelete}
-                                />
-                            </View>
-                            <View style={taskModalStyles.buttonContainer}>
-                                <Button
-                                    title="Save"
-                                    onPress={this.saveTask}
-                                />
-                            </View>
-                        </View>
-                    </View>
-              </Modal>
-        )
+        let buttons = [{name: 'Back', callback:this.props.toggleModal('')},{name: 'Delete', callback: this.confirmDelete},{name: 'Save', callback: this.saveTask}];
+        return (
+              <ModalView buttons={buttons} visible={this.props.display}>
+                    <FormLabel>Content</FormLabel>
+                    <FormInput onChangeText={(content) => this.updateContent(content)} value={this.state.content} />
+                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+                    <FormLabel>Deadline</FormLabel>
+                    <FormInput onChangeText={(deadline) => this.updateDeadline(deadline)} value={this.state.deadline} />
+              </ModalView>
+        );
     }
 
     confirmDelete() {
@@ -118,21 +97,3 @@ export default class EditTaskModal extends Component {
         this.setState({deadline});
     }
 }
-
-const taskModalStyles = StyleSheet.create({
-    modal: {
-        padding: 20,
-        flexDirection: 'column',
-        flex: 1,
-        alignItems: 'stretch',
-        backgroundColor: '#ffffff',
-    },
-    buttonView: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'flex-end',
-    },
-    buttonContainer: {
-        width: '30%'
-    }
-});

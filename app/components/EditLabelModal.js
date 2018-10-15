@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Modal, View, StyleSheet, Button, ToastAndroid, Alert } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
+import ModalView from './ModalView.js';
 import * as firebase from 'firebase';
 
 export default class EditLabelModal extends Component {
@@ -34,35 +35,13 @@ export default class EditLabelModal extends Component {
     }
 
     render() {
-          return (
-              <Modal visible={ this.props.display } animationType = "slide"
-                    onRequestClose={ () => console.log('closed add')}>
-                    <View style={labelModalStyles.modal}>
-                        <FormLabel>Name</FormLabel>
-                        <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name} />
-                        <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <View style={labelModalStyles.buttonView}>
-                            <View style={labelModalStyles.buttonContainer}>
-                                <Button
-                                    title="Back"
-                                    onPress={() => this.props.toggleModal('')}
-                                />
-                            </View>
-                            <View style={labelModalStyles.buttonContainer}>
-                                <Button
-                                    title="Delete"
-                                    onPress={this.confirmDelete}
-                                />
-                            </View>
-                            <View style={labelModalStyles.buttonContainer}>
-                                <Button
-                                    title="Save"
-                                    onPress={this.saveLabel}
-                                />
-                            </View>
-                        </View>
-                    </View>
-              </Modal>
+        let buttons = [{name: 'Back', callback:this.props.toggleModal('')},{name: 'Delete', callback: this.confirmDelete},{name: 'Save', callback: this.saveLabel}];
+        return (
+              <ModalView buttons={buttons} visible={this.props.display}>
+                    <FormLabel>Name</FormLabel>
+                    <FormInput onChangeText={(name) => this.updateName(name)} value={this.state.name} />
+                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+              </ModalView>
         )
     }
 
@@ -128,21 +107,3 @@ export default class EditLabelModal extends Component {
         }
     }
 }
-
-const labelModalStyles = StyleSheet.create({
-    modal: {
-        padding: 20,
-        flexDirection: 'column',
-        flex: 1,
-        alignItems: 'stretch',
-        backgroundColor: '#ffffff',
-    },
-    buttonView: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'flex-end',
-    },
-    buttonContainer: {
-        width: '30%'
-    }
-});

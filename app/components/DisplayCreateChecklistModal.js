@@ -3,6 +3,7 @@ import { Modal, View, StyleSheet, Button, ToastAndroid, ScrollView, TouchableNat
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements';
 import FilterCheckbox from './FilterCheckbox.js';
 import NewFilterModal from './NewFilterModal.js';
+import ModalView from './ModalView.js';
 import * as firebase from 'firebase';
 
 export default class DisplayCreateChecklistModal extends Component {
@@ -69,48 +70,32 @@ export default class DisplayCreateChecklistModal extends Component {
     }
 
     render() {
-          return (
-              <Modal visible={ this.props.display } animationType = "slide"
-                    onRequestClose={ () => console.log('closed add')}>
-                    <View style={modalStyles.modal}>
-                        <FormLabel>Name</FormLabel>
-                        <FormInput onChangeText={(name) => this.updateName(name)}/>
-                        <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
-                        <FormLabel>Description</FormLabel>
-                        <FormInput onChangeText={(description) => this.updateDescription(description)}/>
-                        <FormLabel>Choose your labels</FormLabel>
-                        <ScrollView style={{flex: 1}}>
-                        <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
-                        {
-                            this.state.labels.map(l => <FilterCheckbox name={l.name}
-                                                                      checked={this.state.checked.includes(l.key)}
-                                                                      labelKey={l.key}
-                                                                      pressed={() => this.updateChecked(l.key)}
-                                                                      key={l.key} />
-                                                  )
-                        }
-                            <TouchableNativeFeedback style={{padding: 10}} onPress={() => this.toggleNewFilterModal()}>
-                                <View style={{height: 35, backgroundColor: '#eeeeee', padding: 5}}>
-                                    <Text style={{fontSize: 15}}>+ Create New Label</Text>
-                                </View>
-                            </TouchableNativeFeedback>
-                        </ScrollView>
-                        <View style={modalStyles.buttonView}>
-                            <View style={modalStyles.buttonContainer}>
-                                <Button
-                                    title="Back"
-                                    onPress={this.props.toggleModal}
-                                />
+        let buttons = [{name: 'Back', callback:this.props.toggleModal},{name: 'Save', callback: this.saveChecklist}];
+        return (
+              <ModalView buttons={buttons} visible={this.props.display}>
+                    <FormLabel labelStyle={modalStyles.text}>Name</FormLabel>
+                    <FormInput onChangeText={(name) => this.updateName(name)}/>
+                    <FormValidationMessage>{this.state.errorMessage}</FormValidationMessage>
+                    <FormLabel labelStyle={modalStyles.text}>Description</FormLabel>
+                    <FormInput onChangeText={(description) => this.updateDescription(description)}/>
+                    <FormLabel labelStyle={modalStyles.text}>Choose your labels</FormLabel>
+                    <ScrollView style={{flex: 1}}>
+                    <NewFilterModal display={this.state.displayNewFilterModal} toggleModal={this.toggleNewFilterModal}/>
+                    {
+                        this.state.labels.map(l => <FilterCheckbox name={l.name}
+                                                                  checked={this.state.checked.includes(l.key)}
+                                                                  labelKey={l.key}
+                                                                  pressed={() => this.updateChecked(l.key)}
+                                                                  key={l.key} />
+                                              )
+                    }
+                        <TouchableNativeFeedback style={{padding: 10}} onPress={() => this.toggleNewFilterModal()}>
+                            <View style={{height: 35, backgroundColor: '#eeeeee', padding: 5}}>
+                                <Text style={{fontSize: 15}}>+ Create New Label</Text>
                             </View>
-                            <View style={modalStyles.buttonContainer}>
-                                <Button
-                                    title="Save"
-                                    onPress={this.saveChecklist}
-                                />
-                            </View>
-                        </View>
-                    </View>
-              </Modal>
+                        </TouchableNativeFeedback>
+                    </ScrollView>
+              </ModalView>
         )
     }
 
@@ -161,19 +146,7 @@ export default class DisplayCreateChecklistModal extends Component {
 }
 
 const modalStyles = StyleSheet.create({
-    modal: {
-        padding: 20,
-        flexDirection: 'column',
-        flex: 1,
-        alignItems: 'stretch',
-        backgroundColor: '#ffffff',
+    text: {
+        color: 'white'
     },
-    buttonView: {
-        flexDirection: 'row',
-        justifyContent: 'space-evenly',
-        alignItems: 'flex-end',
-    },
-    buttonContainer: {
-        width: '45%'
-    }
 });
