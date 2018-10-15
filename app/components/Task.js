@@ -7,7 +7,6 @@ export default class LabelBadge extends Component {
 
     state = {
         content: '',
-        deadline: '',
         checked: false
     };
 
@@ -24,7 +23,6 @@ export default class LabelBadge extends Component {
                 if(task){
                     this.setState({
                         content: task.content,
-                        deadline: task.deadline,
                         checked: task.checked
                     });
                 }

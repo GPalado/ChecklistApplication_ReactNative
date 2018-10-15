@@ -8,7 +8,6 @@ export default class NewTaskModal extends Component {
 
     state = {
         content: '',
-        deadline: '',
         errorMessage: 'This field is required'
     }
 
@@ -25,8 +24,6 @@ export default class NewTaskModal extends Component {
                     <FormLabel labelStyle={modalStyles.text}>Content</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(content) => this.updateContent(content)}/>
                     <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
-                    <FormLabel labelStyle={modalStyles.text}>Deadline</FormLabel>
-                    <FormInput inputStyle={modalStyles.text} onChangeText={(deadline) => this.updateDeadline(deadline)}/>
               </ModalView>
         )
     }
@@ -36,7 +33,6 @@ export default class NewTaskModal extends Component {
             console.log('task data', this.state);
             let newTask = {
                 content: this.state.content,
-                deadline: this.state.deadline,
                 checked: false
             };
             let ref = firebase.database().ref('tasks/').push(newTask);
@@ -50,7 +46,6 @@ export default class NewTaskModal extends Component {
     resetState() {
         this.setState({
             content: '',
-            deadline: '',
             errorMessage: 'This field is required'
         });
     }
@@ -66,10 +61,6 @@ export default class NewTaskModal extends Component {
                 errorMessage: ''
             });
         }
-    }
-
-    updateDeadline(deadline) {
-        this.setState({deadline});
     }
 }
 

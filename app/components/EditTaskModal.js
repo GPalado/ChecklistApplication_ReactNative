@@ -8,7 +8,6 @@ export default class EditTaskModal extends Component {
 
     state = {
         content: '',
-        deadline: '',
         checked: false,
         errorMessage: ''
     }
@@ -29,7 +28,6 @@ export default class EditTaskModal extends Component {
 
                 this.setState({
                     content: task.content,
-                    deadline: task.deadline,
                     checked: task.checked
                 });
                 console.log('state', this.state);
@@ -43,8 +41,6 @@ export default class EditTaskModal extends Component {
                     <FormLabel labelStyle={modalStyles.text}>Content</FormLabel>
                     <FormInput inputStyle={modalStyles.text} onChangeText={(content) => this.updateContent(content)} value={this.state.content} />
                     <FormValidationMessage containerStyle={modalStyles.errorTextContainer}>{this.state.errorMessage}</FormValidationMessage>
-                    <FormLabel labelStyle={modalStyles.text}>Deadline</FormLabel>
-                    <FormInput inputStyle={modalStyles.text} onChangeText={(deadline) => this.updateDeadline(deadline)} value={this.state.deadline} />
               </ModalView>
         );
     }
@@ -72,7 +68,6 @@ export default class EditTaskModal extends Component {
             console.log('task data', this.state);
             let ref = firebase.database().ref('tasks/' + this.props.taskKey).set({
                 content: this.state.content,
-                deadline: this.state.deadline,
                 checked: this.state.checked
             });
             ToastAndroid.show('Task Successfully Updated', ToastAndroid.SHORT);
@@ -91,10 +86,6 @@ export default class EditTaskModal extends Component {
                 errorMessage: ''
             });
         }
-    }
-
-    updateDeadline(deadline) {
-        this.setState({deadline});
     }
 }
 
