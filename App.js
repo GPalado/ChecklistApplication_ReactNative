@@ -35,10 +35,6 @@ export default class App extends Component<Props> {
     }
 }
 
-//<View style={appStyles.mainView}>
-//    <Home />
-//</View>
-
 const appStyles = StyleSheet.create({
     mainView: {
         flexDirection: 'column',
