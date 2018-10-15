@@ -183,7 +183,26 @@ export default class FilterModal extends Component {
         });
         this.state.labelsToDelete.forEach((label) => {
             console.log("Deleting label ", label);
-            firebase.database().ref('labels/' + label).remove();
+            firebase.database().ref('labels/' + label + '/checklistKeys').once('value', (snapshot) => {
+                let checklistKeys = snapshot.val();
+                Object.keys(checklistKeys).map((key) => checklistKeys[key]).forEach((clKey) => {
+                    let labelRef = '';
+                    firebase.database().ref('checklists/' + clKey + '/labelKeys').once('value', (snapshot) => {
+                        let labelKeys = snapshot.val();
+                        if(labelKeys) {
+                            Object.keys(labelKeys).forEach((lKey) => {
+                                if(labelKeys[lKey] === label) {
+                                    labelRef = lKey;
+                                }
+                            });
+                        }
+                    }).then((data) => {
+                        firebase.database().ref('checklists/' + clKey + '/labelKeys/' + labelRef).remove();
+                    });
+                });
+            }).then((data) => {
+                firebase.database().ref('labels/' + label).remove();
+            });
         });
         firebase.database().ref('labels/isAll').set(this.state.isAll);
         ToastAndroid.show('Filters Successfully Updated', ToastAndroid.SHORT);
